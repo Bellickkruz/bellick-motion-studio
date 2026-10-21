@@ -1,0 +1,102 @@
+{
+ "Montserrat": [
+  {
+   "file": "montserrat/Montserrat[wght].ttf",
+   "weight": "100 900"
+  }
+ ],
+ "DM Sans": [
+  {
+   "file": "dmsans/DMSans[opsz,wght].ttf",
+   "weight": "100 900"
+  }
+ ],
+ "Space Grotesk": [
+  {
+   "file": "spacegrotesk/SpaceGrotesk[wght].ttf",
+   "weight": "100 900"
+  }
+ ],
+ "Playfair Display": [
+  {
+   "file": "playfairdisplay/PlayfairDisplay[wght].ttf",
+   "weight": "100 900"
+  }
+ ],
+ "Sora": [
+  {
+   "file": "sora/Sora[wght].ttf",
+   "weight": "100 900"
+  }
+ ],
+ "Manrope": [
+  {
+   "file": "manrope/Manrope[wght].ttf",
+   "weight": "100 900"
+  }
+ ],
+ "Outfit": [
+  {
+   "file": "outfit/Outfit[wght].ttf",
+   "weight": "100 900"
+  }
+ ],
+ "Bricolage Grotesque": [
+  {
+   "file": "bricolagegrotesque/BricolageGrotesque[opsz,wdth,wght].ttf",
+   "weight": "100 900"
+  }
+ ],
+ "Fraunces": [
+  {
+   "file": "fraunces/Fraunces[SOFT,WONK,opsz,wght].ttf",
+   "weight": "100 900"
+  }
+ ],
+ "Plus Jakarta Sans": [
+  {
+   "file": "plusjakartasans/PlusJakartaSans[wght].ttf",
+   "weight": "100 900"
+  }
+ ],
+ "Syne": [
+  {
+   "file": "syne/Syne[wght].ttf",
+   "weight": "100 900"
+  }
+ ],
+ "Archivo": [
+  {
+   "file": "archivo/Archivo[wdth,wght].ttf",
+   "weight": "100 900"
+  }
+ ],
+ "Inter": [
+  {
+   "file": "inter/Inter[opsz,wght].ttf",
+   "weight": "100 900"
+  }
+ ],
+ "Poppins": [
+  {
+   "file": "poppins/Poppins-SemiBold.ttf",
+   "weight": 600
+  },
+  {
+   "file": "poppins/Poppins-ExtraBold.ttf",
+   "weight": 800
+  },
+  {
+   "file": "poppins/Poppins-Bold.ttf",
+   "weight": 700
+  },
+  {
+   "file": "poppins/Poppins-Regular.ttf",
+   "weight": 400
+  },
+  {
+   "file": "poppins/Poppins-Medium.ttf",
+   "weight": 500
+  }
+ ]
+}

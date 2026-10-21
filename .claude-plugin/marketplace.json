@@ -1,0 +1,14 @@
+{
+  "name": "bellick-kruz",
+  "description": "Creator tools by Bellick Kruz",
+  "owner": {
+    "name": "Bellick Kruz"
+  },
+  "plugins": [
+    {
+      "name": "bellick-motion-studio",
+      "source": "./plugins/bellick-motion-studio",
+      "description": "Turn talking-head clips and scripts into branded motion-design videos: captions, animated graphics, AI voice and 4K exports in each creator's own brand."
+    }
+  ]
+}

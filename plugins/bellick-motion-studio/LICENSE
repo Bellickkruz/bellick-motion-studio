@@ -1,0 +1,33 @@
+Bellick Motion Studio
+Copyright (c) 2026 Bellick Kruz. All rights reserved.
+
+This repository is publicly visible so the plugin can be installed. It is NOT open source.
+
+PERMITTED
+You may install and use Bellick Motion Studio, through Claude, to create videos for yourself or your clients,
+including commercial and sponsored videos. The videos you create are yours.
+
+NOT PERMITTED without prior written permission from Bellick Kruz
+- Copying, modifying, adapting, translating or creating derivative works of the plugin, its skills,
+  templates, tools, Brand Studio page or documentation.
+- Redistributing, republishing, sublicensing, selling, renting or sharing the plugin or any part of it,
+  including in other plugins, marketplaces, repositories, courses or templates.
+- Removing or altering this notice, or the "Bellick Motion Studio" name or credits.
+- Using the name "Bellick Motion Studio" (or a confusingly similar name) for any other product.
+
+Only Bellick Kruz may publish updates to this plugin. Copies obtained from anywhere other than this repository
+are unauthorised.
+
+THIRD-PARTY COMPONENTS (keep their own licences; this notice does not restrict them)
+- Fonts in plugins/bellick-motion-studio/kit/fonts are licensed under the SIL Open Font License 1.1
+  (licence files included in each font folder).
+- Speech-recognition (Whisper, via sherpa-onnx) and voice (Kokoro) models are downloaded at first use from
+  their own publishers under their own licences; they are not part of this repository.
+- The example product (PayBox) name and logo belong to their owner and appear only in the preloaded example.
+
+NO WARRANTY
+The plugin is provided "as is", without warranty of any kind. Bellick Kruz is not liable for any claim or damage
+arising from its use. You are responsible for the accuracy of claims in your videos and for any required
+paid-promotion disclosures.
+
+Licensing enquiries: contact Bellick Kruz.

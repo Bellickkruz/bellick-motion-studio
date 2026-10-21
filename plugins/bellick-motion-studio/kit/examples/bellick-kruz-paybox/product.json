@@ -1,0 +1,25 @@
+{
+ "name": "PayBox",
+ "maker": "MoonPay",
+ "logo": "paybox_tile.png",
+ "logo_style": "tile",
+ "logo_rule": "Keep the original black-and-white tile. Never recolour it.",
+ "url": "https://www.moonpay.com",
+ "tagline": "The AI prepares. You approve.",
+ "one_liner": "An AI payment vault that lets Claude and ChatGPT prepare transactions, while you approve each one with a passkey.",
+ "disclosure": "#ad",
+ "footnote": "Illustrative flow · PayBox “Always Ask” mode",
+ "keywords": ["AI", "agent", "approve", "passkey", "USDC", "SOL"],
+ "facts": [
+  "Launched 29 July 2026 by MoonPay; connects to Claude and ChatGPT as a connector",
+  "Prompt, approve, pay: the agent prepares, you approve with a passkey, then funds move",
+  "Modes: Always Ask (passkey every transaction) and Autonomous (spending limit; changing it needs a passkey; revocable)",
+  "Keys split with MPC across TEEs; neither MoonPay nor the AI can sign alone; each approval covers one action",
+  "Supports swaps, bridging, DeFi, x402 paid services, bookings and shopping",
+  "Launch chains: Solana, Ethereum, Base, Arbitrum, Polygon, Hyperliquid, Tempo, Robinhood Chain"
+ ],
+ "safe_claims": ["Your AI prepares; you approve", "Nothing moves until you approve (Always Ask mode)", "Route selected by PayBox"],
+ "avoid_claims": ["Best price / best market guaranteed", "Approval guarantees success (use 'Submitted')", "Every action uses the same approval flow", "Unlocked wallet (approval is one-time)", "Chains beyond the launch list without checking (e.g. BNB)"],
+ "sources": ["https://theblock.co/post/410032/moonpay-paybox-chatgpt-claude", "https://decrypt.co/374687/moonpays-paybox-crypto-wallet-claude-chatgpt", "https://genfinity.io/2026/07/29/moonpay-paybox-ai-agent-wallet-solana-x402/"],
+ "checked": "2026-10-21"
+}

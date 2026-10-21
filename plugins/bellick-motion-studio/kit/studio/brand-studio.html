@@ -1,0 +1,216 @@
+<title>Brand Studio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Montserrat:wght@400;700&family=DM+Sans:wght@400;700&family=Space+Grotesk:wght@400;700&family=Playfair+Display:wght@400;700&family=Sora:wght@400;700&family=Manrope:wght@400;700&family=Outfit:wght@400;700&family=Bricolage+Grotesque:wght@400;700&family=Fraunces:wght@400;700&family=Plus+Jakarta+Sans:wght@400;700&family=Syne:wght@400;700&family=Archivo:wght@400;700&family=Inter:wght@400;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a working desk — controls column on the left, a sticky phone-sized preview of the brand on the right. */
+:root{
+  --paper:#F5F4F1; --panel:#FFFFFF; --ink:#1D1C22; --ink2:#5C5A66; --rule:#E2E0E7; --focus:#5B4BD1; --good:#1E7A4F; --warn:#A45A00; --bad:#B42335;
+  --f-ui:'Manrope','Segoe UI',system-ui,sans-serif; --f-mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--paper:#141318;--panel:#1D1C23;--ink:#EEEDF3;--ink2:#A6A3B3;--rule:#2E2C37;--focus:#9C8FFF;--good:#5FD39A;--warn:#F2A54A;--bad:#FF7D8E;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#141318;--panel:#1D1C23;--ink:#EEEDF3;--ink2:#A6A3B3;--rule:#2E2C37;--focus:#9C8FFF;--good:#5FD39A;--warn:#F2A54A;--bad:#FF7D8E;color-scheme:dark}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+h1{font-size:26px;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink2);margin:0 0 10px;font-weight:700}
+.wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;align-items:start}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}}
+header{max-width:1180px;margin:0 auto 18px;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline;justify-content:space-between}
+header p{margin:0;color:var(--ink2);max-width:62ch}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:18px}
+.col{display:grid;gap:16px;min-width:0}
+.roles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.role{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--rule);border-radius:10px;background:transparent;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.role[aria-pressed="true"]{border-color:var(--focus);box-shadow:0 0 0 2px var(--focus) inset}
+.role .sw{width:34px;height:34px;border-radius:8px;border:1px solid rgba(0,0,0,.12);flex:none}
+.role b{display:block;font-size:13px}.role code{font-family:var(--f-mono);font-size:12px;color:var(--ink2)}
+.picker{display:flex;flex-wrap:wrap;gap:18px;align-items:center}
+#wheel{width:200px;height:200px;border-radius:50%;cursor:crosshair;touch-action:none;max-width:100%}
+.pk-side{display:grid;gap:10px;min-width:0;flex:1 1 200px}
+label{font-size:13px;color:var(--ink2);display:grid;gap:4px}
+input[type=text],select{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;min-width:0}
+input[type=range]{width:100%;accent-color:var(--focus)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{width:30px;height:30px;border-radius:8px;border:1px solid rgba(0,0,0,.12);cursor:pointer;padding:0}
+.hrow{display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px;align-items:center;font-size:13px;color:var(--ink2)}
+.checks{display:grid;gap:6px}
+.ck{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:7px 10px;border-radius:8px;border:1px solid var(--rule)}
+.ck .r{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.ok{color:var(--good)}.mid{color:var(--warn)}.no{color:var(--bad)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+button.act{font:inherit;font-weight:700;border:0;border-radius:10px;padding:10px 16px;background:var(--ink);color:var(--paper);cursor:pointer}
+button.ghost{font:inherit;border:1px solid var(--rule);border-radius:10px;padding:9px 14px;background:transparent;color:var(--ink);cursor:pointer}
+button:focus-visible,.role:focus-visible,.chip:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+textarea{width:100%;min-height:150px;font-family:var(--f-mono);font-size:12px;color:var(--ink);background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:10px;box-sizing:border-box;resize:vertical}
+.note{font-size:12px;color:var(--ink2)}
+/* preview */
+.pv{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:grid;gap:12px}
+.frame{width:100%;max-width:340px;aspect-ratio:9/16;border-radius:22px;overflow:hidden;position:relative;margin:0 auto;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.frame .cap{position:absolute;left:8%;right:8%;top:12%;text-align:center;font-weight:700;font-size:26px;line-height:1.1;letter-spacing:-.02em}
+.frame .card{position:absolute;left:8%;right:8%;top:34%;padding:14px;border-radius:var(--pr);display:flex;gap:12px;align-items:center}
+.frame .card .ic{width:44px;height:44px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center}
+.frame .card b{display:block;font-size:16px}.frame .card span{font-size:12px}
+.frame .btns{position:absolute;left:8%;right:8%;top:55%;display:flex;gap:8px}
+.frame .btns div{flex:1;height:42px;border-radius:calc(var(--pr)*.6);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.frame .gem{position:absolute;left:50%;top:79%;width:84px;height:84px;transform:translate(-50%,-50%) rotate(45deg);border-radius:18px}
+.frame .ft{position:absolute;left:0;right:0;bottom:4%;text-align:center;font-size:10px}
+.end{width:100%;max-width:340px;aspect-ratio:16/9;border-radius:16px;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 10px 30px rgba(0,0,0,.14);overflow:hidden}
+.end .logo{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.end .logo img{width:100%;height:100%;object-fit:contain}
+.end .nm{font-weight:700;font-size:24px;letter-spacing:-.02em}.end .tg{font-size:13px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<script type="application/json" id="prefill">{"example":true,"brand":{"name":"Bellick Kruz","credit":"Created by Bellick Kruz","colors":{"background":"#FBF7F0","text":"#2A0B3D","primary":"#7B2CBF","accent":"#B44CFF","soft":"#D7B4F3","softer":"#EDE0FA","surface":"#FFFFFF","muted":"#8A6AA0"},"font":{"heading":"Poppins","body":"Poppins"},"style":{"background":"glow","corner":40},"avoid_colors":["green","mint","teal","coral"]},"logo_swatches":["#0A0A0A","#FFFFFF","#7B2CBF","#B44CFF"],"product":{"name":"PayBox","tagline":"The AI prepares. You approve."}}</script>
+
+<header>
+  <div><h1>Brand Studio</h1><p id="sub">Mix your brand colours and fonts. Every Bellick Motion Studio video uses these settings. When you're done, copy the settings and paste them back into the chat.</p></div>
+  <div class="chips" style="gap:8px"><button class="ghost" id="reset" type="button">Reset to start</button><button class="act" id="copy1" type="button">Copy brand settings</button></div>
+</header>
+
+<div class="wrap">
+  <div class="col">
+    <section class="panel" aria-labelledby="h-roles">
+      <h2 id="h-roles">Brand colours · pick one to edit</h2>
+      <div class="roles" id="roles"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-wheel">
+      <h2 id="h-wheel">Colour wheel</h2>
+      <div class="picker">
+        <canvas id="wheel" width="400" height="400" aria-label="Colour wheel: drag to pick hue and saturation"></canvas>
+        <div class="pk-side">
+          <label for="light">Lightness <input type="range" id="light" min="0" max="100" step="1"></label>
+          <label for="hex">Hex code <input type="text" id="hex" maxlength="7" spellcheck="false" autocomplete="off"></label>
+          <div><div class="note" style="margin-bottom:6px">From your logo</div><div class="chips" id="logoSw"></div></div>
+          <label for="logoUp" style="cursor:pointer">Upload a logo to pull its colours <input type="file" id="logoUp" accept="image/*"></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-harm">
+      <h2 id="h-harm">Matching colours · based on your main colour</h2>
+      <div class="checks" id="harm"></div>
+      <p class="note" style="margin:10px 0 0">Click a colour to apply it to the role you're editing.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="h-read">
+      <h2 id="h-read">Readability</h2>
+      <div class="checks" id="checks"></div>
+      <p class="note" style="margin:10px 0 0">4.5 or more is comfortable for small text. 3 or more is fine for big captions and buttons.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="h-type">
+      <h2 id="h-type">Fonts, shape and details</h2>
+      <div class="grid2">
+        <label for="fh">Headings and captions <select id="fh"></select></label>
+        <label for="fb">Body text <select id="fb"></select></label>
+        <label for="corner">Corner roundness <input type="range" id="corner" min="0" max="60" step="2"></label>
+        <label for="bgs">Background style <select id="bgs"><option value="glow">Soft glow</option><option value="flat">Flat colour</option><option value="grid">Fine grid</option></select></label>
+        <label for="bname">Creator name <input type="text" id="bname" autocomplete="off"></label>
+        <label for="credit">Credit line on the end card <input type="text" id="credit" autocomplete="off"></label>
+        <label for="avoid" style="grid-column:1/-1">Colours never to use (comma separated) <input type="text" id="avoid" autocomplete="off"></label>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-exp">
+      <h2 id="h-exp">Your brand settings</h2>
+      <textarea id="out" readonly aria-label="Brand settings to paste into the chat"></textarea>
+      <div class="chips" style="margin-top:10px;align-items:center;gap:12px"><button class="act" id="copy2" type="button">Copy brand settings</button><span class="note" id="copied" role="status"></span></div>
+      <p class="note">Paste these into your Bellick Motion Studio chat. Claude saves them as your brand file, and every video after that uses them.</p>
+    </section>
+  </div>
+
+  <aside class="pv" aria-label="Live preview">
+    <div class="frame" id="frame">
+      <div class="cap" id="pCap"><span>Your brand,</span> <span id="pAcc">in motion.</span></div>
+      <div class="card" id="pCard"><div class="ic" id="pIc"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path id="pIcP" d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><div><b>Feature card</b><span>A short supporting line</span></div></div>
+      <div class="btns"><div id="pGhost">Decline</div><div id="pBtn">Approve</div></div>
+      <div class="gem" id="pGem"></div>
+      <div class="ft" id="pFt">Illustrative footnote</div>
+    </div>
+    <div class="end" id="end"><div class="logo" id="eLogo"></div><div class="nm" id="eName">Product</div><div class="tg" id="eTag"></div><div class="tg" id="eCred" style="font-size:11px;margin-top:6px"></div></div>
+    <p class="note" style="text-align:center;margin:0">Live preview of a video frame and the end card</p>
+  </aside>
+</div>
+
+<script>
+const FONTS=['Poppins','Montserrat','DM Sans','Space Grotesk','Playfair Display','Sora','Manrope','Outfit','Bricolage Grotesque','Fraunces','Plus Jakarta Sans','Syne','Archivo','Inter'];
+const ROLES=[['background','Background','The canvas behind everything'],['text','Text','Headlines and captions'],['primary','Main colour','3D objects and highlights'],['accent','Accent','Buttons, active words and trails'],['soft','Soft tint','Glows and borders'],['softer','Lightest tint','Faint fills'],['surface','Cards','Card and panel surfaces'],['muted','Muted text','Labels and small print']];
+let pre={};try{pre=JSON.parse(document.getElementById('prefill').textContent);}catch(e){}
+const START=JSON.parse(JSON.stringify(pre.brand||{}));
+let B=JSON.parse(JSON.stringify(START));B.colors=Object.assign({background:'#FBF7F0',text:'#2A0B3D',primary:'#7B2CBF',accent:'#B44CFF',soft:'#D7B4F3',softer:'#EDE0FA',surface:'#FFFFFF',muted:'#8A6AA0'},B.colors||{});B.font=B.font||{heading:'Poppins',body:'Poppins'};B.style=B.style||{background:'glow',corner:40};
+try{const s=localStorage.getItem('ms-brand-draft');if(s){const d=JSON.parse(s);if(d&&d.name===B.name)B=d;}}catch(e){}
+let sel='primary';let logoSw=(pre.logo_swatches||[]).slice();let logoUrl=null;
+const $=id=>document.getElementById(id);
+if(pre.example)$('sub').textContent='Showing the example brand (Bellick Kruz). Upload your logo or edit any colour to make it yours, then copy the settings and paste them back into the chat.';
+/* colour maths */
+const h2r=h=>{h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');return[0,2,4].map(i=>parseInt(h.slice(i,i+2),16));};
+const r2h=c=>'#'+c.map(v=>Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')).join('').toUpperCase();
+function r2hsl([r,g,b]){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let h=0,s=0;const l=(mx+mn)/2;if(mx!==mn){const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);h=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4;h*=60;}return[h,s,l];}
+function hsl2r(h,s,l){h=((h%360)+360)%360/360;const f=(p,q,t)=>{if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p;};if(!s)return[l*255,l*255,l*255];const q=l<.5?l*(1+s):l+s-l*s,p=2*l-q;return[f(p,q,h+1/3)*255,f(p,q,h)*255,f(p,q,h-1/3)*255];}
+const hsl=(h,s,l)=>r2h(hsl2r(h,s,l));
+const lum=h=>{const c=h2r(h).map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4);});return .2126*c[0]+.7152*c[1]+.0722*c[2];};
+const cr=(a,b)=>{const x=lum(a),y=lum(b);return(Math.max(x,y)+.05)/(Math.min(x,y)+.05);};
+const valid=h=>/^#[0-9a-fA-F]{6}$/.test(h);
+/* wheel */
+const wc=$('wheel'),wx=wc.getContext('2d');
+function drawWheel(){const R=200,img=wx.createImageData(400,400);const L=+$('light').value/100;
+  for(let y=0;y<400;y++)for(let x=0;x<400;x++){const dx=x-R,dy=y-R,d=Math.hypot(dx,dy);const i=(y*400+x)*4;if(d>R){img.data[i+3]=0;continue;}
+    const c=hsl2r(Math.atan2(dy,dx)*180/Math.PI,d/R,L);img.data[i]=c[0];img.data[i+1]=c[1];img.data[i+2]=c[2];img.data[i+3]=255;}
+  wx.putImageData(img,0,0);const [h,s]=r2hsl(h2r(B.colors[sel]));const a=h*Math.PI/180;const mx=R+Math.cos(a)*s*R,my=R+Math.sin(a)*s*R;
+  wx.lineWidth=5;wx.strokeStyle='#fff';wx.beginPath();wx.arc(mx,my,12,0,7);wx.stroke();wx.lineWidth=2;wx.strokeStyle='#000';wx.beginPath();wx.arc(mx,my,15,0,7);wx.stroke();}
+function pickAt(e){const r=wc.getBoundingClientRect();const x=(e.clientX-r.left)/r.width*400-200,y=(e.clientY-r.top)/r.height*400-200;const s=Math.min(1,Math.hypot(x,y)/200);setColor(hsl(Math.atan2(y,x)*180/Math.PI,s,+$('light').value/100),false);}
+let drag=false;wc.addEventListener('pointerdown',e=>{drag=true;try{wc.setPointerCapture(e.pointerId);}catch(_){}pickAt(e);});wc.addEventListener('pointermove',e=>{if(drag)pickAt(e);});wc.addEventListener('pointerup',()=>drag=false);
+$('light').addEventListener('input',()=>{const [h,s]=r2hsl(h2r(B.colors[sel]));setColor(hsl(h,s,+$('light').value/100),false);});
+$('hex').addEventListener('input',e=>{let v=e.target.value.trim();if(v&&v[0]!=='#')v='#'+v;if(valid(v))setColor(v.toUpperCase(),true);});
+function setColor(h,syncLight){B.colors[sel]=h;if(syncLight)$('light').value=Math.round(r2hsl(h2r(h))[2]*100);render(true);}
+/* roles */
+function rolesUI(){$('roles').innerHTML=ROLES.map(([k,n,d])=>`<button type="button" class="role" data-k="${k}" aria-pressed="${k===sel}" title="${d}"><span class="sw" style="background:${B.colors[k]}"></span><span><b>${n}</b><code>${B.colors[k]}</code></span></button>`).join('');
+  $('roles').querySelectorAll('.role').forEach(b=>b.onclick=()=>{sel=b.dataset.k;$('light').value=Math.round(r2hsl(h2r(B.colors[sel]))[2]*100);render(false);});}
+/* harmonies */
+function harmUI(){const [h,s,l]=r2hsl(h2r(B.colors.primary));const S=Math.max(s,.35);
+  const rows=[['Complementary',[hsl(h+180,S,l),hsl(h+180,S,Math.min(.75,l+.15))]],['Analogous',[hsl(h-30,S,l),hsl(h+30,S,l),hsl(h+30,S,Math.min(.7,l+.12))]],['Triadic',[hsl(h+120,S,l),hsl(h+240,S,l)]],
+    ['Tints',[.6,.72,.82,.9,.96].map(x=>hsl(h,Math.min(S,.7),x))],['Shades',[.1,.16,.24,.34].map(x=>hsl(h,Math.min(S,.75),x))],['Neutrals',[hsl(h,.08,.97),hsl(h,.12,.93),hsl(h,.1,.55),hsl(h,.15,.2)]]];
+  $('harm').innerHTML=rows.map(([n,cs])=>`<div class="hrow"><span>${n}</span><div class="chips">${cs.map(c=>`<button type="button" class="chip" style="background:${c}" data-c="${c}" title="${c}" aria-label="Apply ${c}"></button>`).join('')}</div></div>`).join('');
+  $('harm').querySelectorAll('.chip').forEach(b=>b.onclick=()=>setColor(b.dataset.c,true));}
+function logoUI(){$('logoSw').innerHTML=logoSw.length?logoSw.map(c=>`<button type="button" class="chip" style="background:${c}" data-c="${c}" title="${c}" aria-label="Apply ${c}"></button>`).join(''):'<span class="note">Upload a logo to see its colours here.</span>';
+  $('logoSw').querySelectorAll('.chip').forEach(b=>b.onclick=()=>setColor(b.dataset.c,true));}
+/* logo upload: extract colours in the browser */
+$('logoUp').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');const k=Math.min(1,120/Math.max(im.width,im.height));c.width=Math.max(1,im.width*k);c.height=Math.max(1,im.height*k);const x=c.getContext('2d');x.drawImage(im,0,0,c.width,c.height);
+  const d=x.getImageData(0,0,c.width,c.height).data;const bins={};for(let i=0;i<d.length;i+=4){if(d[i+3]<128)continue;const key=[d[i],d[i+1],d[i+2]].map(v=>Math.round(v/32)).join(',');bins[key]=(bins[key]||[0,0,0,0]);bins[key][0]+=d[i];bins[key][1]+=d[i+1];bins[key][2]+=d[i+2];bins[key][3]++;}
+  logoSw=Object.values(bins).sort((a,b)=>b[3]-a[3]).slice(0,8).map(v=>r2h([v[0]/v[3],v[1]/v[3],v[2]/v[3]]));logoUrl=rd.result;
+  const col=logoSw.map(h=>({h,s:r2hsl(h2r(h))[1],l:r2hsl(h2r(h))[2]})).filter(o=>o.s>.25&&o.l>.15&&o.l<.85);
+  if(col.length){const [hh,ss,ll]=r2hsl(h2r(col[0].h));Object.assign(B.colors,{primary:hsl(hh,Math.max(ss,.45),Math.min(Math.max(ll,.32),.5)),accent:col[1]?col[1].h:hsl(hh,Math.min(1,ss+.1),Math.min(.62,ll+.12)),soft:hsl(hh,Math.min(ss,.6),.82),softer:hsl(hh,Math.min(ss,.6),.92),text:hsl(hh,Math.min(ss,.7),.14),muted:hsl(hh,Math.min(ss,.25),.48)});}
+  render(true);};im.src=rd.result;};rd.readAsDataURL(f);});
+/* readability */
+function checksUI(){const c=B.colors;const onA=cr('#FFFFFF',c.accent)>=cr(c.text,c.accent)?'#FFFFFF':c.text;
+  const rows=[['Text on background',cr(c.text,c.background),4.5],['Accent words on background',cr(c.accent,c.background),3],['Button text on accent',cr(onA,c.accent),3],['Muted text on background',cr(c.muted,c.background),4.5],['Text on cards',cr(c.text,c.surface),4.5]];
+  const FAM={red:[[345,360],[0,12]],coral:[[5,25]],orange:[[20,40]],yellow:[[45,65]],green:[[75,150]],lime:[[65,90]],mint:[[140,170]],teal:[[165,195]],cyan:[[180,200]],blue:[[200,250]],purple:[[260,300]],violet:[[255,290]],pink:[[300,345]],magenta:[[290,330]],brown:[[15,40]]};
+  const hits=[];(B.avoid_colors||[]).forEach(nm=>{const r=FAM[nm.toLowerCase()];if(!r)return;Object.entries(c).forEach(([k,v])=>{const [h,s,l]=r2hsl(h2r(v));if(s<.2||l<.08||l>.95)return;if(r.some(([a,b])=>h>=a&&h<=b))hits.push(`${(ROLES.find(x=>x[0]===k)||[k,k])[1]} looks ${nm}`);});});
+  const avoidRow=hits.length?`<div class="ck"><span>Colours you said never to use</span><b class="no">${hits.slice(0,3).join(' · ')}</b></div>`:((B.avoid_colors||[]).length?`<div class="ck"><span>Colours you said never to use</span><b class="ok">None used</b></div>`:'');
+  $('checks').innerHTML=avoidRow+rows.map(([n,v,need])=>{const cls=v>=need?'ok':v>=3?'mid':'no';const w=v>=need?'Good':v>=3?'Big text only':'Too faint';return `<div class="ck"><span>${n}</span><span><span class="r">${v.toFixed(2)}</span> · <b class="${cls}">${w}</b></span></div>`;}).join('');}
+/* preview */
+function previewUI(){const c=B.colors;const fh=`'${B.font.heading}',sans-serif`,fb=`'${B.font.body}',sans-serif`;const r=(B.style.corner||0)*.4+'px';
+  const fr=$('frame');fr.style.setProperty('--pr',r);const g=B.style.background;
+  fr.style.background=g==='flat'?c.background:g==='grid'?`repeating-linear-gradient(0deg,${c.soft}44 0 1px,transparent 1px 18px),repeating-linear-gradient(90deg,${c.soft}44 0 1px,transparent 1px 18px),${c.background}`:`radial-gradient(70% 45% at 15% 92%,${c.soft}aa,transparent 70%),radial-gradient(70% 45% at 88% 8%,${c.softer},transparent 70%),${c.background}`;
+  $('pCap').style.fontFamily=fh;$('pCap').style.color=c.text;let ink=c.accent;for(let i=0;i<12&&cr(ink,c.background)<3.2;i++)ink=r2h(h2r(ink).map((v,k)=>v+(h2r(c.text)[k]-v)*.15));$('pAcc').style.color=ink;
+  const cd=$('pCard');cd.style.background=c.surface;cd.style.border=`1px solid ${c.soft}`;cd.style.fontFamily=fb;cd.style.color=c.text;cd.querySelector('span').style.color=c.muted;cd.querySelector('b').style.fontFamily=fh;cd.style.boxShadow=`0 10px 24px ${c.text}22`;
+  $('pIc').style.background=c.softer;$('pIcP').setAttribute('stroke',c.primary);
+  const onA=cr('#FFFFFF',c.accent)>=cr(c.text,c.accent)?'#FFFFFF':c.text;Object.assign($('pBtn').style,{background:c.accent,color:onA,fontFamily:fb});Object.assign($('pGhost').style,{background:c.surface,color:c.muted,border:`2px solid ${c.soft}`,fontFamily:fb});
+  $('pGem').style.background=`linear-gradient(135deg,${c.soft},${c.primary} 55%,${r2h(h2r(c.primary).map((v,k)=>v+(h2r(c.text)[k]-v)*.55))})`;$('pFt').style.color=c.muted;
+  const en=$('end');en.style.background=`radial-gradient(60% 60% at 90% 10%,${c.softer},transparent 70%),${c.background}`;en.style.fontFamily=fh;
+  $('eLogo').innerHTML=logoUrl?`<img src="${logoUrl}" alt="">`:'';$('eLogo').style.background=logoUrl?'transparent':c.primary;
+  const P=pre.product||{};$('eName').textContent=P.name||'Your product';$('eName').style.color=c.text;const tg=(P.tagline||'Your tagline.').split(/(?<=[.!?])\s+/);
+  $('eTag').innerHTML=tg.length>1?`${tg.slice(0,-1).join(' ')} <span style="color:${ink}">${tg[tg.length-1]}</span>`:tg[0];$('eTag').style.color=c.text;$('eCred').textContent=B.credit||'';$('eCred').style.color=c.muted;}
+/* form fields */
+$('fh').innerHTML=$('fb').innerHTML=FONTS.map(f=>`<option style="font-family:'${f}'">${f}</option>`).join('');
+function fieldsIn(){$('fh').value=B.font.heading;$('fb').value=B.font.body;$('corner').value=B.style.corner??40;$('bgs').value=B.style.background||'glow';$('bname').value=B.name||'';$('credit').value=B.credit||'';$('avoid').value=(B.avoid_colors||[]).join(', ');}
+[['fh',v=>B.font.heading=v],['fb',v=>B.font.body=v],['corner',v=>B.style.corner=+v],['bgs',v=>B.style.background=v],['bname',v=>B.name=v],['credit',v=>B.credit=v],['avoid',v=>B.avoid_colors=v.split(',').map(s=>s.trim()).filter(Boolean)]].forEach(([id,fn])=>$(id).addEventListener('input',e=>{fn(e.target.value);render(false);}));
+/* export */
+function json(){const o={name:B.name,credit:B.credit,colors:B.colors,font:B.font,style:B.style,avoid_colors:B.avoid_colors||[]};return 'BELLICK MOTION STUDIO BRAND SETTINGS\n'+JSON.stringify(o,null,1);}
+async function copy(){const t=json();try{await navigator.clipboard.writeText(t);$('copied').textContent='Copied. Paste it into the chat.';}catch(e){const ta=$('out');ta.focus();ta.select();$('copied').textContent='Select-all is on. Copy it with your keyboard or long-press.';}}
+$('copy1').onclick=copy;$('copy2').onclick=copy;
+$('reset').onclick=()=>{B=JSON.parse(JSON.stringify(START));B.colors=Object.assign({},B.colors);B.font=B.font||{heading:'Poppins',body:'Poppins'};B.style=B.style||{background:'glow',corner:40};fieldsIn();render(true);};
+function render(syncWheel){rolesUI();harmUI();logoUI();checksUI();previewUI();if(syncWheel!==false)$('light').value=Math.round(r2hsl(h2r(B.colors[sel]))[2]*100);$('hex').value=document.activeElement===$('hex')?$('hex').value:B.colors[sel];drawWheel();$('out').value=json();try{localStorage.setItem('ms-brand-draft',JSON.stringify(B));}catch(e){}}
+fieldsIn();render(true);
+</script>

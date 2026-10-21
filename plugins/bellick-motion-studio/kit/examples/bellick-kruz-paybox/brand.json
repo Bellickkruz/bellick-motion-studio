@@ -1,0 +1,10 @@
+{
+ "name": "Bellick Kruz",
+ "credit": "Created by Bellick Kruz",
+ "avatar": "avatar.png",
+ "colors": {"background": "#FBF7F0", "text": "#2A0B3D", "primary": "#7B2CBF", "accent": "#B44CFF", "accentInk": "#9A2EE6", "soft": "#D7B4F3", "softer": "#EDE0FA", "surface": "#FFFFFF", "muted": "#8A6AA0"},
+ "avoid_colors": ["green", "mint", "teal", "coral"],
+ "font": {"heading": "Poppins", "body": "Poppins"},
+ "style": {"mood": "minimal, premium product explainer; restrained 3D, soft shadows, glowing purple lines", "background": "glow", "corner": 40},
+ "rules": ["Background is always warm cream, never dark or purple", "No green, mint, teal or coral anywhere", "Do not build until the creator says start"]
+}
