@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-wordmark-dark.png">
+    <img src="assets/logo-wordmark-light.png" alt="Bellick Motion Studio" width="560">
+  </picture>
+</p>
+
 # Bellick Motion Studio
 
 Turn talking-head clips and scripts into branded motion-design videos, in **your** brand, for any product you promote.

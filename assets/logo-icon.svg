@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><defs>
+<linearGradient id="tileD" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4A1468"/><stop offset=".55" stop-color="#2E0C47"/><stop offset="1" stop-color="#1A0629"/></linearGradient>
+<radialGradient id="glowD" cx=".3" cy=".22" r=".8"><stop offset="0" stop-color="#C99AF0" stop-opacity=".38"/><stop offset="1" stop-color="#C99AF0" stop-opacity="0"/></radialGradient>
+<linearGradient id="tileL" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFCF8"/><stop offset="1" stop-color="#F0E4F8"/></linearGradient>
+<linearGradient id="tileR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9A3FE0"/><stop offset=".55" stop-color="#6A22A8"/><stop offset="1" stop-color="#3D0F5E"/></linearGradient>
+<linearGradient id="trail" gradientUnits="userSpaceOnUse" x1="360" y1="230" x2="700" y2="760"><stop offset="0" stop-color="#E2B8FF" stop-opacity=".15"/><stop offset=".55" stop-color="#D08BFF" stop-opacity=".75"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient>
+<radialGradient id="ball" cx=".35" cy=".3" r=".75"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".45" stop-color="#E9C6FF"/><stop offset="1" stop-color="#B44CFF"/></radialGradient>
+<linearGradient id="glassP" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D7B4F3" stop-opacity=".75"/><stop offset="1" stop-color="#B98ADB" stop-opacity=".55"/></linearGradient>
+<linearGradient id="glassL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#B44CFF" stop-opacity=".55"/><stop offset="1" stop-color="#7B2CBF" stop-opacity=".6"/></linearGradient>
+<linearGradient id="core" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5A1A8C"/><stop offset="1" stop-color="#2A0B3D"/></linearGradient>
+<filter id="sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#14031F" flood-opacity=".45"/></filter>
+<filter id="shL" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#2A0B3D" flood-opacity=".25"/></filter>
+<filter id="glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="22"/></filter>
+<filter id="blur30" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="30"/></filter>
+</defs>
+<rect width="1024" height="1024" rx="232" fill="url(#tileL)"/>
+<circle cx="512" cy="512" r="300" fill="#D7B4F3" opacity=".6" filter="url(#blur30)"/>
+<g filter="url(#shL)">
+<rect x="208" y="170" width="330" height="586" rx="58" fill="url(#glassP)" stroke="#FFFFFF" stroke-width="10"/>
+<rect x="356" y="430" width="470" height="300" rx="54" fill="url(#glassL)" stroke="#FFFFFF" stroke-width="10"/>
+</g>
+<path d="M356 484 Q356 430 410 430 H538 V702 Q538 730 510 730 H356 Z" fill="url(#core)"/>
+<path d="M356 484 Q356 430 410 430 H538 V702 Q538 730 510 730 H356 Z" fill="none" stroke="#FFFFFF" stroke-opacity=".9" stroke-width="8"/>
+<polygon points="421,535 491,580 421,625" fill="#FBF7F0" stroke="#FBF7F0" stroke-width="20" stroke-linejoin="round"/>
+<rect x="248" y="208" width="72" height="16" rx="8" fill="#2A0B3D" opacity=".55"/><circle cx="500" cy="216" r="10" fill="#B44CFF"/>
+<rect x="590" y="664" width="150" height="24" rx="12" fill="#FFFFFF"/><rect x="590" y="634" width="96" height="18" rx="9" fill="#2A0B3D" opacity=".7"/>
+<g fill="#B44CFF"><rect x="700" y="372" width="18" height="18" rx="5" opacity=".9"/><rect x="740" y="340" width="12" height="12" rx="4" opacity=".6"/><rect x="772" y="318" width="8" height="8" rx="3" opacity=".4"/></g>
+</svg>
