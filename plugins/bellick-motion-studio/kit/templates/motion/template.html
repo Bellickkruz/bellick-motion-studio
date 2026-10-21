@@ -59,9 +59,23 @@ MS.setupEnd(document.body);
 const cursor=el('div','ms-cursor',document.body,`<svg viewBox="0 0 54 54" width="100%" height="100%"><path d="M8 4 L8 44 L18 34 L25 50 L33 46 L26 31 L41 31 Z" fill="#fff" stroke="${col.text}" stroke-width="3.5" stroke-linejoin="round"/></svg>`);
 let cursorReq=null;
 const stage=$('stage');
+const R_=((MS.B.style&&MS.B.style.corner!=null)?MS.B.style.corner:36)*U;
 const tok=s=>[...s].map(ch=>ch===' '?'&nbsp;':(ch==='→'?arrowSvg(36*U,col.accent):ch));
 /* ---------------- scene builders ---------------- */
+const FOOT=[];const A_=C.assets||{};const FPS_=A_.fps||30;
+function frameSrc(t){const fi=Math.max(1,Math.min(A_.frameCount||1,Math.floor(t*FPS_)+1));return A_.frames+'/f'+String(fi).padStart(4,'0')+'.jpg';}
 const BUILD={
+ footage(p,root){if(!A_.frames){el('div','ttl',root,'(footage scene needs --frames)');return ()=>{};}
+  const style=p.style||'full';const wrap=el('div','',root);const img=el('img','',wrap);img.style.cssText='width:100%;height:100%;object-fit:cover;display:block';
+  if(style==='full'){Object.assign(wrap.style,{position:'absolute',inset:0,overflow:'hidden',background:'#000'});
+    const sh=el('div','',root);Object.assign(sh.style,{position:'absolute',left:0,right:0,bottom:0,height:'58%',background:`linear-gradient(180deg,rgba(0,0,0,0),${rgba(col.text,.45)} 60%,${rgba(col.text,.6)})`});
+    const sh2=el('div','',root);Object.assign(sh2.style,{position:'absolute',left:0,right:0,top:0,height:'20%',background:'linear-gradient(180deg,rgba(0,0,0,.3),rgba(0,0,0,0))'});}
+  else{const ar=W/H;let ch=ST.h*.98,cw=ch*ar;if(cw>ST.w*.98){cw=ST.w*.98;ch=cw/ar;}
+    Object.assign(wrap.style,{position:'absolute',left:(ST.cx-cw/2)+'px',top:(ST.cy-ch/2)+'px',width:cw+'px',height:ch+'px',overflow:'hidden',borderRadius:(R_*1.2)+'px',border:`${6*U}px solid ${col.surface}`,boxShadow:`0 ${34*U}px ${80*U}px ${rgba(col.text,.28)}`});
+    if(p.label){const lb=el('div','ms-chip',root,p.label);Object.assign(lb.style,{left:ST.cx+'px',top:(ST.cy-ch/2-30*U)+'px',transform:'translate(-50%,-100%)'});}}
+  const rec={img,style,s:p};FOOT.push(rec);
+  return (lt,dur,t)=>{const src=frameSrc(t);if(!img.src.endsWith(src))img.src=src;
+    if(style!=='full'){const k=Math.sin(lt*.8)*.004;wrap.style.transform=`scale(${1+k})`;}};},
  hero(p,root){const svg=sv('svg',root,{class:'full',width:W,height:H});const R=ST.m*.2;const cx=ST.cx,cy=ST.cy-ST.h*.06;
   const glow=sv('circle',svg,{cx,cy,r:R*2,fill:col.soft,opacity:.35});glow.style.filter=`blur(${40*U}px)`;
   const ring=sv('ellipse',svg,{cx,cy,rx:R*1.45,ry:R*.38,fill:'none',stroke:col.accent,'stroke-width':3*U,'stroke-dasharray':`${6*U} ${14*U}`});
@@ -153,7 +167,7 @@ const BUILD={
 };
 /* ---------------- scenes ---------------- */
 const SC=(CT.scenes||[]).map((s,i)=>{const root=el('div','scene',stage);const up=(BUILD[s.type]||BUILD.statement)(s,root);return {s,root,up};});
-function sceneT(o,t){const s=o.s;const tin=s.in||'rise',tout=s.out||'fade';const a=P(t,s.t0,.5),b=P(t,s.t1,s.out==='dive'?.55:.45);
+function sceneT(o,t){const s=o.s;const tin=s.in||(s.type==='footage'?'fade':'rise'),tout=s.out||'fade';const a=s.t0<=0?1:P(t,s.t0,.5),b=P(t,s.t1,s.out==='dive'?.55:.45);
   if(t<s.t0||t>s.t1+.6){o.root.style.opacity=0;o.root.style.display='none';return false;}o.root.style.display='block';
   let op=eOut(a),tr='';if(tin==='rise')tr+=`translateY(${(1-eOut(a))*60*U}px) `;if(tin==='zoom')tr+=`scale(${lerp(.85,1,eOut(a))}) `;if(tin==='flip')tr+=`perspective(${1600*U}px) rotateX(${(1-eOut(a))*-50}deg) `;if(tin==='fade'||tin==='flash')tr+='';
   if(tout==='dive'){tr+=`scale(${lerp(1,14,eIn(b))}) `;}else if(tout==='zoom'){tr+=`scale(${lerp(1,1.15,eIO(b))}) `;op*=1-eIO(b);}else op*=1-eIO(b);
@@ -172,8 +186,14 @@ function render(t){
     const lv=eIO(P(t,cursorReq.tap+.15,.4));cursor.style.opacity=clamp(P(t,cursorReq.t0,.2))*(1-lv);cursor.style.transform=`translate(${x+lv*80*U}px,${y+lv*120*U}px) scale(${1-pulse(t,cursorReq.tap,.08)*.15})`;}else cursor.style.opacity=0;
   const stmtOn=SC.some(o=>o.s.type==='statement'&&t>=o.s.t0&&t<o.s.t1);const capNode=document.querySelector('.ms-cap');
   if(!CT.captions.off){MS.captions(t,{hideAfter:END});if(capNode&&stmtOn)capNode.innerHTML='';}
-  if(foot)foot.style.opacity=1-P(t,END,.3);
+  // caption style follows what is on screen: on-video style over full-frame footage, brand style over animation
+  if(capNode){const onFoot=SC.some(o=>o.s.type==='footage'&&(o.s.style||'full')==='full'&&t>=o.s.t0&&t<o.s.t1);
+    const ORIg=MS.ORI;const yV=CT.captions.videoY!=null?CT.captions.videoY:(ORIg==='portrait'?.53:ORIg==='landscape'?.72:.56);
+    capNode.classList.toggle('onvideo',onFoot||CT.captions.mode==='video');capNode.style.top=((onFoot?yV:(CT.captions.y!=null?CT.captions.y:(ORIg==='portrait'?.16:ORIg==='landscape'?.1:.12)))*H)+'px';
+    if(onFoot)capNode.style.fontSize=((CT.captions.videoSize||(ORIg==='landscape'?64:72))*U)+'px';else capNode.style.fontSize=((CT.captions.size||(ORIg==='landscape'?78:92))*U)+'px';}
+  if(foot){foot.style.opacity=1-P(t,END,.3);const onF=SC.some(o=>o.s.type==='footage'&&(o.s.style||'full')==='full'&&t>=o.s.t0&&t<o.s.t1);foot.style.color=onF?'rgba(255,255,255,.85)':'';foot.style.textShadow=onF?'0 1px 6px rgba(0,0,0,.5)':'';}
   MS.endCard(t,END);
+  const vis=FOOT.filter(f=>t>=f.s.t0-.05&&t<f.s.t1+.7);return Promise.all(vis.map(f=>f.img.decode().catch(()=>{})));
 }
 render(0);window.READY=true;
 </script></body></html>

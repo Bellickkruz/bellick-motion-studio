@@ -3,7 +3,7 @@
 Turn talking-head clips and scripts into branded motion-design videos, in **your** brand, for any product you promote.
 
 - **Brand Studio:** pull colours from your logo, then mix your brand on a colour wheel with live preview and readability checks
-- **Captions & graphics** on your own clip, or **full motion design** from a script
+- **Choose your style:** full motion design, partial with graphics over your footage, or partial with mixed cuts between you on camera and animated scenes
 - Product fact-checking, so your on-screen claims stay accurate
 - Optional AI voiceover, plus 4K and 1080 exports in the **same shape as your original video**
 

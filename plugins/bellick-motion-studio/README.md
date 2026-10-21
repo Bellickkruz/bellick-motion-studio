@@ -5,6 +5,7 @@ Turn talking-head clips and scripts into branded motion-design videos, for any c
 ## What it does
 - **Brand setup:** pull colours from a logo, then mix the brand in the interactive **Brand Studio**. It has a colour wheel, matching colours, readability checks, 14 fonts and a live preview. The brand is saved as a reusable brand pack.
 - **Product setup:** researches the product being promoted and records facts, safe claims, claims to avoid, logo rules and the #ad disclosure, so videos stay accurate.
+- **Pick a style for every video:** Full motion design, Partial: graphics over your footage, or Partial: mixed cuts (cut between you on camera and full-screen animated scenes).
 - **Captions & graphics:** upload a clip; it's transcribed, you confirm the words, and it gets word-timed kinetic captions, animated callout cards and a branded end card.
 - **Full motion design:** turns a clip's transcript or a script into a fully animated video from a scene library (3D gem, logo dive, flow, feature cards, counter, phone with approval sheet, before/after, checklist, kinetic statement).
 - **Voice & export:** optional AI voiceover (checked by transcribing it back), and 4K + 1080 exports that match the original video's shape (vertical, landscape, square or 4:5).

@@ -53,6 +53,19 @@ Scene times are absolute. Inside a scene, any `at` value is relative to that sce
 | `compare` | Before (greyed) vs after (brand, glowing) cards; side by side in landscape, stacked in portrait | `before: {title, lines}`, `after: {title, lines}`, `switchAt` |
 | `checklist` | Items ticking in one by one | `title`, `items`, `stagger` |
 | `statement` | Huge kinetic headline, word by word | `text`, `accent: [words]`, `size` |
+| `footage` | The creator's own video, synced to the timeline (mixed cuts); needs `--frames` at build | `style: "full"` (full-frame, captions switch to on-video style automatically) or `"card"` (framed card over the brand background, with gentle breathing), `label` (chip above a card) |
+
+### Mixed cuts example (portrait clip, 10.9s of speech)
+```json
+{"duration": 14.3, "endAt": 11.1, "scenes": [
+  {"type": "footage", "t0": 0, "t1": 2.2, "style": "full", "out": "zoom"},
+  {"type": "logo", "t0": 2.25, "t1": 3.05, "name": true, "in": "zoom", "out": "dive"},
+  {"type": "flow", "t0": 3.1, "t1": 5.35, "in": "flash", "nodes": [{"label": "Market A", "icon": "chart"}, {"label": "Route selected", "icon": "check"}]},
+  {"type": "phone", "t0": 5.4, "t1": 8.65, "prompt": "Swap USDC → SOL", "sendAt": 0.3, "sheet": {"at": 0.4, "title": "Review request", "buttons": ["Decline", "Approve"]}},
+  {"type": "footage", "t0": 8.7, "t1": 11.0, "style": "card", "label": "Your call", "in": "zoom"}
+]}
+```
+A scene starting at 0 is fully visible on frame 1. Captions use `captions.videoY` and `videoSize` over footage, and `y` and `size` over animation.
 
 Icons: check, arrow, spark, bolt, shield, clock, chart, chat, wallet, lock, user, globe, heart, star, key, search, cart, play.
 

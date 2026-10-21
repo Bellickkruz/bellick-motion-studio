@@ -13,7 +13,7 @@ The tools, templates, fonts and examples live in the plugin's `kit` folder, two 
 ## Route the request
 1. **No brand on file in this chat** (no `brand.json` uploaded or created yet): run the **brand-setup** skill first. If the user only wants to see what the plugin does, offer the preloaded example (see below).
 2. **No product on file** (no `product.json`): run the **product-setup** skill. Skip this only for videos that promote nothing.
-3. **Brand and product ready**: run the **make-video** skill for a video, or for a script, a narration or an export.
+3. **Brand and product ready**: run the **make-video** skill for a video, or for a script, a narration or an export. It starts by letting the user choose a style: **Full motion design**, **Partial: graphics over footage**, or **Partial: mixed cuts**.
 
 Users keep their setup between chats as **brand packs**: zips holding `brand.json` or `product.json` plus their images. When a user uploads a pack, unzip it into the job folder and continue straight to make-video.
 
