@@ -1,6 +1,6 @@
 ---
 name: make-video
-description: Makes a branded Bellick Motion Studio video in the style the user picks (full motion design, partial with graphics over their footage, or partial with mixed cuts between footage and animation), with optional AI voiceover, optional music and sound effects (built-in or their own track), and 4K export in the original's aspect ratio. Use when a user uploads a video or script to turn into content, asks for captions, motion graphics, a voiceover, music, sound effects, a re-export, or a 4K version.
+description: Makes a branded Bellick Motion Studio video in the style the user picks (full motion design, partial with graphics over their footage, or partial with mixed cuts between footage and animation), with optional AI voiceover, optional music and sound effects (built-in or their own track), and a choice of export quality (fast 720p preview, Full HD or 4K, each with a measured time estimate) in the original's aspect ratio. Use when a user uploads a video or script to turn into content, asks for captions, motion graphics, a voiceover, music, sound effects, a re-export, or a 4K version.
 ---
 
 # Make a video
@@ -48,19 +48,28 @@ If they skip the question, are away, or just say "go", add no sound. Never add m
    - For both partial styles, extract frames at the design size: `ffmpeg -i clip.mp4 -vf "fps=30,scale=W:H:flags=lanczos" -q:v 2 frames/f%04d.jpg`, and pass `--frames frames` to build.py. Mixed cuts uses the `motion` template with `footage` scenes. Its `duration` is the clip length plus about 3.2s, with `endAt` just after the last word.
    - Build the page: `python3 -I $KIT/tools/build.py --template ugc|motion --brand brand.json --product product.json --content content.json --words words.json --format WxH [--frames frames] --out page.html`
 7. **Stills check:** `python3 $KIT/tools/render.py page.html stills t1,t2,…` (one per beat), tile them into a sheet, and **look at it yourself**. Check that captions stay clear of the mouth and face, text is readable and not clipped, nothing overlaps, colours are brand-only and the logo is untouched. Fix, then send the sheet to the user.
-8. **Render** (in the background, since it takes minutes):
-   - 4K: `python3 $KIT/tools/render.py page.html video v4k.mp4 --scale 2`
-   - **If they chose music or effects:** keep `v4k.mp4` silent and follow `references/sound.md` (cue sheet, stems, `sound.py mix`). This replaces the mux below, and the result is checked by transcribing it.
+8. **Export quality (the user picks, with real time estimates):**
+   - First measure render speed on this workspace: `python3 $KIT/tools/render.py page.html estimate all`. It times a few real frames at each quality (about 30–60 seconds) and prints the minutes each export will take. Run it while nothing else is rendering, or the numbers come out high.
+   - Then ask with AskUserQuestion (or a numbered list), putting each estimate in the label, rounded up to whole minutes. Example labels: "Fast preview, 720p (~3 min)", "Full HD, 1080p (~8 min)", "4K UHD (~25 min)", "4K + Full HD copy (~26 min)". Add one line to each option:
+     - Preview: to check motion and timing before a final export.
+     - Full HD: sharp on phones and on X, and the quickest final.
+     - 4K: the sharpest, for YouTube or re-editing.
+     - 4K + Full HD: both files from one render.
+   - Mark none as recommended. If the user doesn't answer, use 4K + Full HD. Remind them that a quick preview now and a 4K export once they're happy is a good habit for long videos, and that a re-export only re-renders: nothing else is redone.
+   - While it renders, tell them when to expect it (for example "about 8 minutes, ready around 14:20"). If they ask partway through, check `progress` in the render log and give an updated time.
+9. **Render** (in the background, since it takes minutes):
+   - `python3 $KIT/tools/render.py page.html video vsilent.mp4 --quality preview|hd|4k` (for "4K + Full HD" render `4k`). It prints progress every 5 seconds of video.
+   - **If they chose music or effects:** keep `vsilent.mp4` silent and follow `references/sound.md` (cue sheet, stems, `sound.py mix`). This replaces the mux below, and the result is checked by transcribing it.
    - **Otherwise,** mux the audio. With the user's voice, use `-i clip.mp4` and this filter:
      `highpass=f=80,afftdn=nf=-25,acompressor=threshold=-20dB:ratio=2.5:attack=5:release=120,loudnorm=I=-16:TP=-1.5:LRA=9,aresample=48000,apad=whole_dur=DUR,afade=t=out:st=END:d=0.8`
      Use `-c:v copy -c:a aac -b:a 256k -ac 2 -t DUR -movflags +faststart`.
-   - Make the 1080 copy: scale the 4K output down with `lanczos`, `-crf 14 -preset slow`.
-   - Name the files `<Product>_<Style>_4K_<W>x<H>.mp4` and `<Product>_<Style>_<W>x<H>.mp4`, where Style is `FullMotion`, `Overlay` or `MixedCuts`.
-9. **Verify before sending:** `ffprobe` each file (size must equal the design size ×2 and ×1, and duration must be right), check loudness is about −16 LUFS (`ffmpeg -i f.mp4 -af ebur128 -f null -`), and sample 6–9 frames across the video into a sheet and look at them. Then send the files as downloads, so previews don't compress them.
-10. **Close:** one line on what was made, the disclosure reminder, and an offer of changes.
+   - For "4K + Full HD", make the 1080 copy by scaling the finished 4K file down with `lanczos`, `-crf 14 -preset slow` (about a minute). A downscaled copy looks sharper than rendering at 1080.
+   - Name the files `<Product>_<Style>_<Quality>_<W>x<H>.mp4`, where Style is `FullMotion`, `Overlay` or `MixedCuts` and Quality is `Preview`, `FullHD` or `4K`.
+10. **Verify before sending:** `ffprobe` each file (size must equal the design size × the quality: preview ×2/3, Full HD ×1, 4K ×2, and duration must be right), check loudness is about −16 LUFS (`ffmpeg -i f.mp4 -af ebur128 -f null -`), and sample 6–9 frames across the video into a sheet and look at them. Then send the files as downloads, so previews don't compress them.
+11. **Close:** one line on what was made, the disclosure reminder, and an offer of changes (and, after a preview, an offer to export in Full HD or 4K).
 
 ## Changes after delivery
-Edit `content.json` or `words.json`, rebuild, re-check the affected stills, re-render and re-verify. Sound-only changes (adding, removing or swapping music, effects or levels) reuse the silent `v4k.mp4` and only re-mix, which takes seconds. When a caption word is corrected, regenerate `words.json` from the corrected phrase text.
+Edit `content.json` or `words.json`, rebuild, re-check the affected stills, re-render and re-verify. Sound-only changes (adding, removing or swapping music, effects or levels) reuse the silent `vsilent.mp4` and only re-mix, which takes seconds. When a caption word is corrected, regenerate `words.json` from the corrected phrase text.
 
 ## Quality bar
 - Kinetic captions, three words at a time, with the active word in the accent colour and keywords highlighted. The hook is visible in frame 1.

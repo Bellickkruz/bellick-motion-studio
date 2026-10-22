@@ -5,7 +5,7 @@ description: Entry point for Bellick Motion Studio, a branded video maker for cr
 
 # Bellick Motion Studio
 
-Bellick Motion Studio turns a creator's talking-head clips and scripts into finished, branded motion-design videos. It handles transcription, captions, animated graphics, optional AI voiceover, optional music and sound effects (original built-in sounds or the creator's own track) and a 4K export, in the creator's own brand, for any product they promote.
+Bellick Motion Studio turns a creator's talking-head clips and scripts into finished, branded motion-design videos. It handles transcription, captions, animated graphics, optional AI voiceover, optional music and sound effects (original built-in sounds or the creator's own track) and an export in the quality the creator picks (preview, Full HD or 4K), in the creator's own brand, for any product they promote.
 
 ## Locate the kit
 The tools, templates, fonts and examples live in the plugin's `kit` folder, two levels above this skill's base directory (`<base>/../../kit`). Set `KIT` to that absolute path for every command. Work in a fresh folder under the working directory (for example `./ms-job-<name>`). Never write inside `KIT`.
@@ -38,4 +38,4 @@ It's an example. Never apply its brand or product to another user's video unless
 - Code execution and file creation must be enabled in their Claude settings.
 - The first transcription or AI voice in a chat downloads about 1GB of models from GitHub (about 2 minutes) using `KIT/tools/setup.sh`. If their workspace blocks GitHub downloads, they can paste their transcript instead and supply their own voice recording.
 - Transcription and AI voice are English only.
-- A 15-second 4K render takes about 5–10 minutes.
+- Exports come in three qualities: a fast 720p preview, Full HD or 4K. Before rendering, the plugin measures this workspace's speed and shows the time each one will take. As a rough guide, a 15-second video takes about 1–2 minutes as a preview, 3–4 in Full HD and 8–10 in 4K.

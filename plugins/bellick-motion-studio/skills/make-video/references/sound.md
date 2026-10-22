@@ -22,14 +22,14 @@ Moods (`python3 -I sound.py list`):
 Suggest a mood in the storyboard from the product's tone, and let the user change it. Tonal effects (blip, success, chime, shimmer) are tuned to the chosen mood's key. With their own track or no music, they use `calm`'s key, or `--key-of` to pick another.
 
 ## Pipeline
-Render the video **silent** first (`v4k.mp4`), so sound can be changed later without re-rendering.
+Render the video **silent** first (`vsilent.mp4`), so sound can be changed later without re-rendering.
 
 1. **Cue sheet** (effects only): `python3 -I $KIT/tools/sound.py cues content.json --template motion|ugc --duration D --end E --out sfx.json`.
    - `E` is when the end card starts: `endAt` for motion, or the clip length (plus `endGap`) for ugc.
    - It prints a count per effect. Read `sfx.json` and trim anything that would be busy: for example, drop key ticks if the typing is very fast, or a whoosh fighting a strong spoken word.
    - Custom scenes need hand-written cues: `{"t": 3.8, "sfx": "whoosh"}`, with optional `gain` (0–1.5), `dur` (whoosh, riser, shimmer) and `pan` (−1 to 1).
 2. **Make the stems:** `python3 -I $KIT/tools/sound.py make --duration D --end E --mood calm|upbeat|minimal|none [--sfx sfx.json] --out-dir snd`. This takes about 5–10 seconds per 15 seconds of video.
-3. **Mix and mux:** `python3 -I $KIT/tools/sound.py mix --video v4k.mp4 --duration D --out final.mp4 --voice clip.mp4 --voice-kind own [--music snd/music.wav | --music their_track.mp3 --music-start 12] [--sfx snd/sfx.wav]`.
+3. **Mix and mux:** `python3 -I $KIT/tools/sound.py mix --video vsilent.mp4 --duration D --out final.mp4 --voice clip.mp4 --voice-kind own [--music snd/music.wav | --music their_track.mp3 --music-start 12] [--sfx snd/sfx.wav]`.
    - Use `--voice-kind ai` with `vo.wav`.
    - It cleans the voice, measures true loudness (EBU R128), sets the music 22 LU under the voice and ducks it a further 10 dB while someone speaks, keeps the loudest effect 8 LU under the voice, places the effects, and normalises to −16 LUFS with a two-pass loudnorm. The video stream is copied untouched.
    - Make the 1080 copy from `final.mp4` as usual.
@@ -40,4 +40,4 @@ Render the video **silent** first (`v4k.mp4`), so sound can be changed later wit
 When sound is on, add a **Sound** column (for example "whoosh in", "tap + passkey blip", "chime on logo"), and name the mood or "your track".
 
 ## Changes after delivery
-Changing the mood, levels, effects or track only needs steps 2–3 on the kept silent `v4k.mp4`, which takes seconds and needs no re-render. Removing sound means muxing the plain voice again.
+Changing the mood, levels, effects or track only needs steps 2–3 on the kept silent `vsilent.mp4`, which takes seconds and needs no re-render. Removing sound means muxing the plain voice again.
