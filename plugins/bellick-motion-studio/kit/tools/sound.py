@@ -454,10 +454,16 @@ def frames_db(x, hop=0.05):
     r = np.sqrt((m[:k * h].reshape(k, h) ** 2).mean(1) + 1e-12); return 20 * np.log10(r)
 
 
-def active_level(x):
-    # rough loudness weighting: ignore the deep lows that RMS overcounts
-    d = frames_db(np.stack([fft_filter(x.mean(0), hp(150, 1))])); d = d[d > d.max() - 30]
-    return 10 * np.log10(np.mean(10 ** (d / 10))) if len(d) else -60
+def loudness(x, tmp):
+    """True EBU R128 loudness via ffmpeg: (integrated LUFS, list of momentary LUFS every 0.1s)."""
+    p = os.path.join(tmp, 'meas.wav'); pk = np.abs(x).max()
+    if pk < 1e-7: return -70.0, []
+    write_wav(p, x / pk * 0.5)  # measure at a safe level, then correct back
+    off = 20 * np.log10(pk / 0.5)
+    r = subprocess.run(['ffmpeg', '-hide_banner', '-nostats', '-i', p, '-af', 'ebur128', '-f', 'null', '-'], capture_output=True, text=True).stderr
+    mom = [float(l.split(' M:')[1].split()[0]) + off for l in r.splitlines() if ' M:' in l and 'TARGET' in l]
+    I = float(r.split('Integrated loudness:')[1].split('I:')[1].split('LUFS')[0])
+    return I + off, [m for m in mom if m > -60]
 
 
 def fit(x, n):
@@ -473,7 +479,8 @@ def do_mix(a):
         vp = os.path.join(tmp, 'voice.wav')
         subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', a.voice, '-vn', '-af', chain, '-ac', '2', '-ar', str(SR), vp], check=True)
         voice = fit(decode(vp), n)
-    ref = active_level(voice) if voice is not None else -20.0
+    ref = loudness(voice, tmp)[0] if voice is not None else -20.0
+    report = {'voice_lufs': round(ref, 1)}
     total = np.zeros((2, n)) if voice is None else voice.copy()
     if a.music:
         m = decode(a.music)[:, N(a.music_start):]
@@ -485,18 +492,20 @@ def do_mix(a):
                 w = np.linspace(0, 1, xf); out = np.concatenate([out[:, :-xf], out[:, -xf:] * (1 - w) + r[:, :xf] * w, r[:, xf:]], 1)
             m = out
         m = fit(m, n); tt = tarr(n); m = m * np.minimum(1, tt / 0.15) * np.clip((D - 0.1 - tt) / 1.5, 0, 1)
-        g = 10 ** ((ref + a.music_level - active_level(m)) / 20); m *= g
+        g = 10 ** ((ref + a.music_level - loudness(m, tmp)[0]) / 20); m *= g
         if voice is not None and a.duck > 0:
             d = frames_db(voice); on = (d > ref - 14).astype(float)
             env = np.zeros_like(on); s = 0.0
             for i, v in enumerate(on): s = s + (v - s) * (0.6 if v > s else 0.1); env[i] = s
             gain = 10 ** (-a.duck * np.interp(tarr(n), np.arange(len(env)) * 0.05 + 0.025, env) / 20)
             m *= gain
+        report['music_lu_under_voice'] = round(loudness(m, tmp)[0] - ref, 1)
         total += m
     if a.sfx:
-        s = fit(decode(a.sfx), n); d = frames_db(s); d = d[d > -70]
-        if len(d):
-            lvl = np.percentile(d, 95); total += s * 10 ** ((ref + a.sfx_level - lvl) / 20)
+        s = fit(decode(a.sfx), n); _, mom = loudness(s, tmp)
+        if mom:
+            s *= 10 ** ((ref + a.sfx_level - max(mom)) / 20); total += s
+            report['loudest_sfx_lu_under_voice'] = round(-a.sfx_level, 1)
     mp = os.path.join(tmp, 'mix.wav'); pk = np.abs(total).max()
     write_wav(mp, total / max(1.0, pk / 0.97))
     # two-pass loudnorm (linear) to -16 LUFS, then mux with the untouched video stream
@@ -508,7 +517,7 @@ def do_mix(a):
     cmd = ['ffmpeg', '-v', 'error', '-y', '-i', a.video, '-i', mp, '-filter_complex', af, '-map', '0:v', '-map', '[a]', '-c:v', 'copy',
            '-c:a', 'aac', '-b:a', '256k', '-ac', '2', '-t', str(D), '-movflags', '+faststart', a.out]
     subprocess.run(cmd, check=True)
-    print(json.dumps({'out': a.out, 'voice_level_db': round(ref, 1), 'music': bool(a.music), 'sfx': bool(a.sfx)}))
+    report['out'] = a.out; print(json.dumps(report))
 
 
 # ---------------------------------------------------------------- cli
@@ -523,7 +532,7 @@ def main():
     m.add_argument('--seed', type=int, default=7); m.add_argument('--out-dir', required=True)
     x = sp.add_parser('mix'); x.add_argument('--video', required=True); x.add_argument('--duration', type=float, required=True); x.add_argument('--out', required=True)
     x.add_argument('--voice'); x.add_argument('--voice-kind', choices=['own', 'ai'], default='own'); x.add_argument('--music'); x.add_argument('--music-start', type=float, default=0)
-    x.add_argument('--sfx'); x.add_argument('--music-level', type=float, default=-18); x.add_argument('--duck', type=float, default=9); x.add_argument('--sfx-level', type=float, default=-5)
+    x.add_argument('--sfx'); x.add_argument('--music-level', type=float, default=-22); x.add_argument('--duck', type=float, default=10); x.add_argument('--sfx-level', type=float, default=-8)
     a = p.parse_args()
     if a.cmd == 'list':
         print('Music moods:'); [print(f'  {k:8s} {v["bpm"]} BPM  {v["desc"]}') for k, v in MOODS.items()]

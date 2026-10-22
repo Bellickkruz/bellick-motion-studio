@@ -31,9 +31,9 @@ Render the video **silent** first (`v4k.mp4`), so sound can be changed later wit
 2. **Make the stems:** `python3 -I $KIT/tools/sound.py make --duration D --end E --mood calm|upbeat|minimal|none [--sfx sfx.json] --out-dir snd`. This takes about 5–10 seconds per 15 seconds of video.
 3. **Mix and mux:** `python3 -I $KIT/tools/sound.py mix --video v4k.mp4 --duration D --out final.mp4 --voice clip.mp4 --voice-kind own [--music snd/music.wav | --music their_track.mp3 --music-start 12] [--sfx snd/sfx.wav]`.
    - Use `--voice-kind ai` with `vo.wav`.
-   - It cleans the voice, sets the music 18 dB under the voice and ducks it a further 9 dB while someone speaks, places the effects, and normalises to −16 LUFS with a two-pass loudnorm. The video stream is copied untouched.
+   - It cleans the voice, measures true loudness (EBU R128), sets the music 22 LU under the voice and ducks it a further 10 dB while someone speaks, keeps the loudest effect 8 LU under the voice, places the effects, and normalises to −16 LUFS with a two-pass loudnorm. The video stream is copied untouched.
    - Make the 1080 copy from `final.mp4` as usual.
-   - Levels: `--music-level` (default −18, use −14 for a louder bed and −22 for a barely-there one), `--duck` (default 9) and `--sfx-level` (default −5).
+   - Levels: `--music-level` (default −22, use −18 for a louder bed and −26 for a barely-there one), `--duck` (default 10) and `--sfx-level` (default −8). It prints the result, for example `music_lu_under_voice: -28.8`. The voice must always be clearly on top, so if the user says the music or effects feel loud, lower them 3–4 dB at a time and re-mix.
 4. **Verify:** run the transcript check on the final file (`asr.py final.mp4 chk`). Every line must still come through. If the music masks words, lower `--music-level` or raise `--duck`. Check that loudness is about −16 LUFS.
 
 ## Storyboard
