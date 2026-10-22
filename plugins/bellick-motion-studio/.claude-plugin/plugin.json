@@ -1,7 +1,7 @@
 {
   "name": "bellick-motion-studio",
-  "version": "0.2.0",
-  "description": "Turn talking-head clips and scripts into branded motion-design videos: auto-transcribed captions, animated graphics, AI voiceover, and 4K exports that match the original video's shape, in each creator's own brand.",
+  "version": "0.3.0",
+  "description": "Turn talking-head clips and scripts into branded motion-design videos: auto-transcribed captions, animated graphics, AI voiceover, optional copyright-free music and sound effects, and 4K exports that match the original video's shape, in each creator's own brand.",
   "author": {
     "name": "Bellick Kruz"
   },
@@ -12,7 +12,9 @@
     "creator",
     "brand",
     "ugc",
-    "4k"
+    "4k",
+    "music",
+    "sound effects"
   ],
   "license": "Proprietary (all rights reserved). See LICENSE.",
   "homepage": "https://github.com/Bellickkruz/bellick-motion-studio"

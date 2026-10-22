@@ -1,11 +1,11 @@
 ---
 name: bellick-motion-studio
-description: Entry point for Bellick Motion Studio, a branded video maker for creators. Use when someone says "Bellick Motion Studio" or "Motion Studio", wants to make a branded video, add captions or motion graphics to a clip, turn a script into an animated video, set up their brand or the product they promote, or asks what Bellick Motion Studio can do.
+description: Entry point for Bellick Motion Studio, a branded video maker for creators. Use when someone says "Bellick Motion Studio" or "Motion Studio", wants to make a branded video, add captions, motion graphics, music or sound effects to a clip, turn a script into an animated video, set up their brand or the product they promote, or asks what Bellick Motion Studio can do.
 ---
 
 # Bellick Motion Studio
 
-Bellick Motion Studio turns a creator's talking-head clips and scripts into finished, branded motion-design videos. It handles transcription, captions, animated graphics, optional AI voiceover and a 4K export, in the creator's own brand, for any product they promote.
+Bellick Motion Studio turns a creator's talking-head clips and scripts into finished, branded motion-design videos. It handles transcription, captions, animated graphics, optional AI voiceover, optional music and sound effects (original built-in sounds or the creator's own track) and a 4K export, in the creator's own brand, for any product they promote.
 
 ## Locate the kit
 The tools, templates, fonts and examples live in the plugin's `kit` folder, two levels above this skill's base directory (`<base>/../../kit`). Set `KIT` to that absolute path for every command. Work in a fresh folder under the working directory (for example `./ms-job-<name>`). Never write inside `KIT`.
@@ -31,6 +31,7 @@ It's an example. Never apply its brand or product to another user's video unless
 - **Their brand, exactly.** Use only the brand's colours and fonts. Never use colours listed in `avoid_colors`. Never recolour the product logo when `logo_rule` says so.
 - **Accuracy.** On-screen claims must stay within the product's `facts` and `safe_claims`, and must never use its `avoid_claims`. Flag risky claims in the user's own script, but leave their spoken words as they said them.
 - **Disclosure.** When the product file has a `disclosure` (for example `#ad`), the end card shows it. Remind the user that the post text needs it too.
+- **Sound is opt-in.** Music and sound effects are added only when the user picks them for that video. "No added sound" is always offered and is the default.
 - **Plain language.** Talk about videos, brands, captions and scenes. Don't mention file paths or JSON unless the user asks.
 
 ## Requirements to tell users about when relevant
