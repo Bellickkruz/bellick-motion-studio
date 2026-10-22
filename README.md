@@ -34,7 +34,7 @@ Your videos use your brand, never mine.
 To receive updates automatically, open `/plugin` → **Marketplaces** → **bellick-kruz** → **Enable auto-update**.
 
 ## Use
-In a new chat, say **"Bellick Motion Studio"** or *"make a branded video from this clip"* and upload your video. The first time, it walks you through setting up your brand and product.
+In a new chat, say **"Bellick Motion Studio"** or *"make a branded video from this clip"* and upload your video. It guides you through a short setup, one step at a time: video, brand, product, style, voice, music, sound effects and export quality. Steps you've already done (like your brand) are ticked off automatically.
 
 ## Requirements
 - A paid Claude plan with code execution and file creation turned on

@@ -7,8 +7,11 @@ description: Makes a branded Bellick Motion Studio video in the style the user p
 
 `KIT` is the plugin's `kit` folder, two levels above this skill's base directory. Work in a fresh job folder. The brand (`brand.json`) and product (`product.json`) must exist first (see brand-setup and product-setup). Read `references/content-schema.md` before writing any content file, `references/voice.md` before an AI voiceover, and `references/sound.md` before adding music or sound effects.
 
-## Step 0: let the user choose the style
-Before transcribing, ask the user to pick one of the three styles below. Use AskUserQuestion when it's available, otherwise a numbered list. Show each with its one-line description. Recommend **Partial: mixed cuts** for a talking-head clip and **Full motion design** for a script with no video. Skip the question only if the user already named a style.
+## Setup steps (asked one at a time)
+The choices below are asked as numbered steps, one per message, following the **guided setup** in the bellick-motion-studio skill: 1 Video, 2 Brand, 3 Product, 4 Style, 5 Voice, 6 Music, 7 Effects, 8 Quality. This section holds the content for steps 4–8. Don't ask any of them before the earlier steps are done, and don't ask two in one message.
+
+### Step 4: style
+Ask the user to pick one of the three styles below, showing each with its one-line description. Recommend **Partial: mixed cuts** for a talking-head clip and **Full motion design** for a script with no video. Skip the question only if the user already named a style.
 
 | Choice | One-line description for the user | Needs | Template | How it's built |
 |---|---|---|---|---|
@@ -20,15 +23,27 @@ For mixed cuts, plan the footage moments in the storyboard. Footage works best f
 
 Script-only jobs (no clip) can only be Full motion design. Say so if they ask for a partial style, and offer to use a clip if they have one.
 
-### Sound (optional, never automatic)
-In the same step, ask whether they want added sound. Ask two questions alongside the style question, with **no option marked as recommended**:
-- **Music:**
+### Step 5: voice
+- If the clip has them speaking, tick it automatically ("✓ Voice: yours, from the clip").
+- For a script, ask: record their own voice and upload it, or use an AI voice: calm female (`af_heart`) or steady male (`am_michael`), English only. Offer a 5-second sample before committing (see `references/voice.md`).
+
+### Steps 6 and 7: music, then sound effects (optional, never automatic)
+Two separate steps, with **no option marked as recommended**:
+- **Step 6, Music:**
   - "No music (keep my audio as it is)", listed first.
   - "Built-in music": original, copyright-free. Calm, upbeat or minimal; suggest one in the storyboard.
   - "My own track": they upload it.
-- **Sound effects:** "No sound effects", listed first, or "Add sound effects": whooshes, taps, typing, pops and chimes, timed to the animation.
+- **Step 7, Sound effects:** "No sound effects", listed first, or "Add sound effects": whooshes, taps, typing, pops and chimes, timed to the animation.
 
-If they skip the question, are away, or just say "go", add no sound. Never add music or effects they didn't choose. Skip the questions if they already said what they want, and if a brand pack says they always want none, don't ask again unless they bring it up.
+If they skip these steps, are away, or just say "go", add no sound. Never add music or effects they didn't choose. Skip the questions if they already said what they want, and if a brand pack says they always want none, don't ask again unless they bring it up.
+
+### Step 8: export quality
+Ask before production, with a rough time for each based on the video's length. These times come from a typical workspace, as seconds of rendering per second of video: preview about 4, Full HD about 13, 4K about 60, and 4K + Full HD about 62. Round up to whole minutes, and say they're rough until measured.
+- Example for a 15-second clip: "Fast preview, 720p (~1 min)", "Full HD, 1080p (~4 min)", "4K UHD (~15 min)", "4K + Full HD copy (~16 min)".
+- Each option gets its one-line purpose (see pipeline step 8).
+- Mark none as recommended. If they don't answer, use 4K + Full HD.
+
+After step 8, send the setup summary (all eight choices) and start the pipeline.
 
 ## Pipeline
 1. **Set up tools once per chat:** `bash $KIT/tools/setup.sh` (add `voice` when an AI voice is needed). If it fails because downloads are blocked, ask for a transcript and skip to step 4.
@@ -48,9 +63,9 @@ If they skip the question, are away, or just say "go", add no sound. Never add m
    - For both partial styles, extract frames at the design size: `ffmpeg -i clip.mp4 -vf "fps=30,scale=W:H:flags=lanczos" -q:v 2 frames/f%04d.jpg`, and pass `--frames frames` to build.py. Mixed cuts uses the `motion` template with `footage` scenes. Its `duration` is the clip length plus about 3.2s, with `endAt` just after the last word.
    - Build the page: `python3 -I $KIT/tools/build.py --template ugc|motion --brand brand.json --product product.json --content content.json --words words.json --format WxH [--frames frames] --out page.html`
 7. **Stills check:** `python3 $KIT/tools/render.py page.html stills t1,t2,…` (one per beat), tile them into a sheet, and **look at it yourself**. Check that captions stay clear of the mouth and face, text is readable and not clipped, nothing overlaps, colours are brand-only and the logo is untouched. Fix, then send the sheet to the user.
-8. **Export quality (the user picks, with real time estimates):**
-   - First measure render speed on this workspace: `python3 $KIT/tools/render.py page.html estimate all`. It times a few real frames at each quality (about 30–60 seconds) and prints the minutes each export will take. Run it while nothing else is rendering, or the numbers come out high.
-   - Then ask with AskUserQuestion (or a numbered list), putting each estimate in the label, rounded up to whole minutes. Example labels: "Fast preview, 720p (~3 min)", "Full HD, 1080p (~8 min)", "4K UHD (~25 min)", "4K + Full HD copy (~26 min)". Add one line to each option:
+8. **Confirm the export time (quality was picked in setup step 8):**
+   - Measure render speed on this workspace: `python3 $KIT/tools/render.py page.html estimate all`. It times a few real frames at each quality (under a minute) and prints the minutes each export will take. Run it while nothing else is rendering, or the numbers come out high.
+   - Tell the user the measured time and a ready-by time for the quality they chose. If it's much longer than the rough setup estimate (more than about 1.5×), offer the choice again with the measured times in the labels, for example "Fast preview, 720p (~3 min)", "Full HD, 1080p (~8 min)", "4K UHD (~25 min)", "4K + Full HD copy (~26 min)". The option lines are:
      - Preview: to check motion and timing before a final export.
      - Full HD: sharp on phones and on X, and the quickest final.
      - 4K: the sharpest, for YouTube or re-editing.
