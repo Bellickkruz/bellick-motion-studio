@@ -50,6 +50,12 @@ for fam in want:
 s = open(tpl).read()
 s = s.replace('/*__FONTS__*/', '\n'.join(css)).replace('/*__CORE_CSS__*/', open(os.path.join(K, 'templates', '_shared', 'core.css')).read())
 s = s.replace('/*__CFG__*/', 'window.CFG=' + json.dumps(cfg) + ';').replace('/*__CORE_JS__*/', open(os.path.join(K, 'templates', '_shared', 'core.js')).read())
+cj = []
+for f in content.get('customScenes', []):
+    q = f if os.path.isabs(f) else os.path.join(os.path.dirname(os.path.abspath(a.content)), f)
+    if not os.path.exists(q): sys.exit(f'missing custom scene file: {q}')
+    cj.append(open(q).read())
+s = s.replace('/*__CUSTOM_JS__*/', '\n'.join(cj))
 open(a.out, 'w').write(s)
 dur = content.get('duration') or ((fc / a.fps + (content.get('endGap') or .25) + 3.2) if fc else (words[-1]['e'] + 4 if words else 8))
 print(json.dumps({'page': os.path.abspath(a.out), 'w': w, 'h': h, 'duration': round(dur, 2)}))

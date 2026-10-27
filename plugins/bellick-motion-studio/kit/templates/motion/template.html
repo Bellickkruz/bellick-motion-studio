@@ -46,6 +46,7 @@
 <div id="flash"></div>
 <script>/*__CFG__*/</script>
 <script>/*__CORE_JS__*/</script>
+<script>/*__CUSTOM_JS__*/</script>
 <script>
 const {C,W,H,U,ORI,col,clamp,P,lerp,eOut,eIn,eIO,eBack,pulse,$,el,sv,icon,arrowSvg,mixHex,rgba}=MS;const LK=MS.LK;
 const CT=C.content||{};const DUR=CT.duration||((C.words&&C.words.length?C.words[C.words.length-1].e:8)+4);window.DURATION=DUR;
@@ -336,6 +337,9 @@ Object.assign(BUILD,{
   return lt=>{if(tt)tt.style.opacity=eOut(P(lt,0,.4));els.forEach((d,i)=>{const at=.35+i*(p.stagger||.14);const q=eBack(P(lt,at,.45));d.style.opacity=clamp(P(lt,at,.15));d.style.transform=`translateY(${(1-clamp(q))*50*U}px) scale(${lerp(.9,1,clamp(q))})`;});};}
 });
 
+/* custom scenes written for one video: content.customScenes files define window.CUSTOM_SCENES = {name:(p,root,K)=>update} */
+const KX={ST,LK,col,U,W,H,ORI,MS,el,sv,icon,arrowSvg,P,lerp,eOut,eIn,eIO,eBack,pulse,clamp,rgba,mixHex,FOOT,frameSrc,C,CT};
+Object.entries(window.CUSTOM_SCENES||{}).forEach(([k,fn])=>{BUILD[k]=(p,root)=>fn(p,root,KX);});
 /* ---------------- scenes ---------------- */
 const SC=(CT.scenes||[]).map((s,i)=>{s._dir=Math.floor(MS.rnd()*4)%4;s._sx=MS.rnd()<.5?-1:1;const root=el('div','scene',stage);const up=(BUILD[s.type]||BUILD.statement)(s,root);return {s,root,up};});
 /* reel: palette colour fields per scene (skipped when the brand fixes its background) */

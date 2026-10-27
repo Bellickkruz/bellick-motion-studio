@@ -141,6 +141,29 @@ In `reel`, the hero dot lands as the full stop after the last word.
 
 Screenshots for `screens3d` need the same privacy check as screen recordings: crop out emails, balances, wallet addresses and names first.
 
+### Custom scenes (written for one video)
+When the concept needs something the library doesn't have, write it. Put the code in a file in the job folder and list it in content.json:
+```json
+{"customScenes": ["scenes/ledger.js"], "scenes": [{"type": "ledger", "t0": 3, "t1": 6.5, "rows": 13}]}
+```
+The file registers builders:
+```js
+window.CUSTOM_SCENES = Object.assign(window.CUSTOM_SCENES || {}, {
+  ledger(p, root, K) {          // K = {ST, LK, col, U, W, H, ORI, MS, el, sv, icon, P, lerp, eOut, eIn, eIO, eBack, pulse, clamp, rgba, mixHex, C, CT}
+    const { el, col, U, P, eOut } = K;
+    // build DOM/SVG/canvas inside root once, using brand colours from col and sizes × U ...
+    return lt => { /* update for local time lt (seconds since t0): deterministic, no timers, no randomness except MS.rnd at build */ };
+  }
+});
+```
+Rules for custom scenes:
+- **Brand only:** take every colour from `col` (or the CSS vars `--text`, `--ink`, `--accent`, `--surface`), fonts from `var(--fh)` / `var(--fd)`, and corners from `--r`.
+- **Deterministic:** the scene draws purely from `lt`, so any frame can be rendered on its own. Use `MS.rnd()` only while building.
+- **Fits any shape:** size things from `ST` (the safe area), `W`, `H` and `U`. Check portrait, landscape and square if the video could be reformatted.
+- **Stays clear of the captions band**, unless captions are off for that scene.
+- **Can set `root._hero = lt => ({x, y, r})`** so the Reel hero dot visits it.
+- Look at stills of every custom scene before rendering.
+
 ### Overlays (any template)
 Chips and buttons that sit on top of whatever is on screen, including full-frame footage:
 ```json

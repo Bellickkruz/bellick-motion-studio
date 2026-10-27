@@ -7,6 +7,24 @@ description: Makes a branded Bellick Motion Studio video in the style the user p
 
 `KIT` is the plugin's `kit` folder, two levels above this skill's base directory. Work in a fresh job folder. The brand (`brand.json`) and product (`product.json`) must exist first (see brand-setup and product-setup). Read `references/content-schema.md` before writing any content file, `references/voice.md` before an AI voiceover, and `references/sound.md` before adding music or sound effects.
 
+## Creative direction: every video is a one-off
+The creator's brand stays fixed: colours, fonts, logo rules, background rules, credit and disclosure. **Everything else is designed fresh for each video.** The scene library and looks are building blocks, not a menu. A finished video should not feel like a filled-in template, and no two videos should feel alike.
+
+Before the storyboard, find the video's **concept**:
+1. **The core idea in one line.** What is this video really about? (For example: "13 people turned a weekend of vibe coding into $20,000.")
+2. **A visual metaphor taken from that idea**, not a stock one: a podium for a prize split, a radar for a market scanner, a ledger filling up for payouts, a lock clicking open for approval. Ask what this specific story looks like.
+3. **One signature moment** that only this video has: a transformation, a reveal or a visual pun that carries the main point. It's the frame people would screenshot.
+4. **A motion personality** that fits the tone (calm and precise, punchy, playful, cinematic), expressed through the look, the pacing and the transitions.
+
+Open the storyboard with these four lines.
+
+**Build what the idea needs.** If no library scene expresses the concept, write a **custom scene** for this video (see "Custom scenes" in `references/content-schema.md`). The signature moment is usually custom. Use the creator's own material wherever possible: their footage, screen recordings and screenshots, real numbers and real product names, after the fact and privacy checks.
+
+**Never repeat yourself for the same creator.**
+- Don't reuse the previous video's concept, signature moment, opening, storyboard shape or look.
+- A brand pack can keep a short `history` list in `brand.json` (date, concept, signature moment, look). Read it, avoid it, and add the new video to it in the pack you hand back.
+- If the creator says two videos feel the same, change the concept and the signature moment, not just the colours.
+
 ## Setup steps (asked one at a time)
 The choices below are asked as numbered steps, one per message, following the **guided setup** in the bellick-motion-studio skill: 1 Video, 2 Brand, 3 Product, 4 Style, 5 Voice, 6 Music, 7 Effects, 8 Quality. This section holds the content for steps 4–8. Don't ask any of them before the earlier steps are done, and don't ask two in one message.
 
