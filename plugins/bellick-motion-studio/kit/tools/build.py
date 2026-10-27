@@ -20,12 +20,20 @@ def asset(base_json, rel):
 w, h = map(int, a.format.lower().split('x'))
 frames = os.path.abspath(a.frames) if a.frames else None
 fc = a.frame_count or (len(glob.glob(os.path.join(frames, 'f*.jpg'))) if frames else 0)
+for sc in content.get('scenes', []):
+    if sc.get('type') == 'screen' and sc.get('src'):
+        d = sc['src'] if os.path.isabs(sc['src']) else os.path.join(os.path.dirname(os.path.abspath(a.content)), sc['src'])
+        if not os.path.isdir(d): sys.exit(f'missing screen frames folder: {d}')
+        sc['_src'] = 'file://' + d; sc['_count'] = len(glob.glob(os.path.join(d, 's*.jpg')))
 cfg = {'brand': brand, 'product': product, 'content': content, 'words': words, 'format': {'w': w, 'h': h},
        'assets': {'logo': asset(a.product, product.get('logo')) if a.product else None, 'avatar': asset(a.brand, brand.get('avatar')) if a.brand else None,
                   'frames': ('file://' + frames) if frames else None, 'frameCount': fc, 'fps': a.fps}}
 # fonts
 reg = json.load(open(os.path.join(K, 'fonts', 'fonts.json')))
 want = {(brand.get('font') or {}).get('heading', 'Poppins'), (brand.get('font') or {}).get('body', 'Poppins'), 'Poppins'}
+look = content.get('look') or (brand.get('style') or {}).get('look') or 'soft'
+if not (brand.get('style') or {}).get('lock_fonts'):
+    want.add(content.get('displayFont') or {'bold': 'Archivo', 'editorial': 'Fraunces'}.get(look, (brand.get('font') or {}).get('heading', 'Poppins')))
 css = []
 for fam in want:
     if fam not in reg: print(f'warning: font {fam} not bundled, falling back to Poppins', file=sys.stderr); continue

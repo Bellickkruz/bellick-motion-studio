@@ -19,6 +19,11 @@ Ask the user to pick one of the three styles below, showing each with its one-li
 | **Partial: graphics over your footage** | "You stay on screen the whole time, with captions and animated cards on top." | Their clip | `ugc` | Full-frame footage, word-timed captions, callout cards (prompt bar, A→B transform with approve tap, feature card, stat, chip) |
 | **Partial: mixed cuts** | "The video cuts between you on camera and full-screen animated scenes, for example your face for the hook and the call to action, and animation for the explanation." | Their clip | `motion` + `--frames` | `footage` scenes (full-frame, or framed as a card) interleaved with animated scenes on one timeline; captions switch style automatically |
 
+**Then, in the same step, the look.** Ask which look the video should have: **Soft**, **Bold**, **Editorial** or **Glass** (one-line feel for each, from `references/content-schema.md`), plus **"Surprise me"**.
+- For "Surprise me", pick a look that differs from their last video. A brand pack's `brand.json` can record `"last_looks"`; update it in the pack you hand back.
+- Never default every video to the same look.
+- Within a look, a new video automatically gets new variations (`seed`), and changing the seed reshuffles them. Use that when a creator says two videos "feel the same".
+
 For mixed cuts, plan the footage moments in the storyboard. Footage works best for the hook (the first 2–3 seconds, so a face stops the scroll), any line with strong emotion or a personal claim, and the call to action. Use animation for explanations, numbers, product flows and lists. Aim for roughly 30–50% footage. Transitions: footage to animation with `out: "zoom"`, a logo `dive` and `in: "flash"`, or a `card`-style footage scene to bring the person back framed over the brand background.
 
 Script-only jobs (no clip) can only be Full motion design. Say so if they ask for a partial style, and offer to use a clip if they have one.
@@ -56,7 +61,7 @@ After step 8, send the setup summary (all eight choices) and start the pipeline.
    ```
    Compare the two passes. Brand names, tickers and slang are often misheard (for example "PayBox" came back as "pay box" and "K-Box", "BNB" as "BMB", and "SOL" as "Soul"). **Send the transcript with timestamps, list every uncertain word, and ask the user to confirm.** Never guess silently.
 4. **Fact-check** the confirmed script against `product.json`: flag lines that hit `avoid_claims` or state unconfirmed facts. Their spoken words stay, but on-screen graphics use safe wording, and the `footnote` covers simplifications.
-5. **Storyboard:** a table of time, spoken line, visual and accuracy note, opened with the chosen style (plus a Sound column and the mood or "your track" when sound is on). For mixed cuts, mark each row **On camera** or **Animated**. For animated scenes, pick scenes from the library that make each line visible, one idea per scene, with at least one transformation moment (a dive, a morph, or a freeze and release). Include the hook in frame 1. Propose, then wait for **"start"**.
+5. **Storyboard:** a table of time, spoken line, visual and accuracy note, opened with the chosen style and look (plus a Sound column and the mood or "your track" when sound is on). For mixed cuts, mark each row **On camera** or **Animated**. For animated scenes, pick scenes from the library that make each line visible, one idea per scene, and vary the scene mix from the creator's previous video (podium, radar, screen, series, counter, phone, flow, cards, compare, checklist, statement, logo, hero), with at least one transformation moment (a dive, a morph, or a freeze and release). Include the hook in frame 1. Propose, then wait for **"start"**.
 6. **Build:**
    - Phrases file `phr.json`: `[[start, end, "confirmed text"], …]` using the ASR segment times. Then `python3 -I $KIT/tools/wordtime.py clip.mp4 phr.json words.json`.
    - Write `content.json` (see the schema). Time every visual to the word that triggers it, using `words.json`.
@@ -82,6 +87,8 @@ After step 8, send the setup summary (all eight choices) and start the pipeline.
    - Name the files `<Product>_<Style>_<Quality>_<W>x<H>.mp4`, where Style is `FullMotion`, `Overlay` or `MixedCuts` and Quality is `Preview`, `FullHD` or `4K`.
 10. **Verify before sending:** `ffprobe` each file (size must equal the design size × the quality: preview ×2/3, Full HD ×1, 4K ×2, and duration must be right), check loudness is about −16 LUFS (`ffmpeg -i f.mp4 -af ebur128 -f null -`), and sample 6–9 frames across the video into a sheet and look at them. Then send the files as downloads, so previews don't compress them.
 11. **Close:** one line on what was made, the disclosure reminder, and an offer of changes (and, after a preview, an offer to export in Full HD or 4K).
+
+**Variety rules:** don't open two consecutive videos for the same creator with the same scene type, and don't reuse a storyboard shape. Mix full-frame footage, framed footage cards, punch-ins and overlays. Prefer the creator's own material: a screen recording beats an illustration when they provide one (after the privacy crop).
 
 ## Changes after delivery
 Edit `content.json` or `words.json`, rebuild, re-check the affected stills, re-render and re-verify. Sound-only changes (adding, removing or swapping music, effects or levels) reuse the silent `vsilent.mp4` and only re-mix, which takes seconds. When a caption word is corrected, regenerate `words.json` from the corrected phrase text.

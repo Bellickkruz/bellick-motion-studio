@@ -28,6 +28,18 @@
   const rgba = (h, a) => `rgba(${hex2rgb(h).join(',')},${a})`;
 
   const B = C.brand, PR = C.product || {}, CT = C.content || {};
+  /* ---------- looks + per-video variation ---------- */
+  const LOOKS = {
+    soft: { bg: 'glow', cap: 'flip', trans: 'rise', out: 'fade', parts: 1, desc: 'Rounded cards, soft glows, gentle rises' },
+    bold: { bg: 'blocks', cap: 'pop', trans: 'slam', out: 'cut', parts: 0, desc: 'Heavy uppercase type, hard shadows, slams and hard cuts' },
+    editorial: { bg: 'paper', cap: 'rise', trans: 'wipe', out: 'wipe', parts: 0, desc: 'Calm magazine layouts, hairlines, masked text and wipes' },
+    glass: { bg: 'orbs', cap: 'glass', trans: 'blur', out: 'blur', parts: 1, desc: 'Frosted glass cards, colour orbs, depth-of-field blurs' }
+  };
+  const LOOK = LOOKS[CT.look] ? CT.look : (B.style && LOOKS[B.style.look] ? B.style.look : 'soft'); const LK = LOOKS[LOOK];
+  const hashStr = str => { let h = 2166136261; for (const ch of str) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return ((h >>> 0) % 2147483645) + 1; };
+  seed = CT.seed != null ? (Math.abs(CT.seed | 0) % 2147483645) + 1 : hashStr(JSON.stringify((C.words || []).map(w => w.w)) + JSON.stringify((CT.scenes || CT.callouts || []).map(x => x.type)));
+  for (let i = 0; i < 5; i++) rnd();
+  document.body.classList.add('look-' + LOOK);
   const col = Object.assign({ background: '#FBF7F0', text: '#2A0B3D', primary: '#7B2CBF', accent: '#B44CFF', soft: '#D7B4F3', softer: '#EDE0FA', surface: '#FFFFFF', muted: '#8A6AA0' }, B.colors || {});
   // readable accent ink for text on the background
   let ink = col.accentInk || col.accent; for (let i = 0; i < 12 && contrast(ink, col.background) < 3.2; i++) ink = mixHex(ink, col.text, .15);
@@ -41,15 +53,37 @@
   const R = (B.style && B.style.corner != null) ? B.style.corner : 36; // corner radius at 1080
   const root = document.documentElement.style;
   Object.entries({ bg: col.background, text: col.text, primary: col.primary, accent: col.accent, ink: col.accentInk, soft: col.soft, softer: col.softer, surface: col.surface, muted: col.muted, onPrimary: col.onPrimary, onAccent: col.onAccent, line: col.line }).forEach(([k, v]) => root.setProperty('--' + k, v));
+  const LOOK_FONT = { bold: 'Archivo', editorial: 'Fraunces' };
+  const FD = (B.style && B.style.lock_fonts) ? FH : (CT.displayFont || LOOK_FONT[LOOK] || FH);
+  root.setProperty('--fd', `'${FD}', '${FH}', 'Poppins', sans-serif`);
   root.setProperty('--fh', `'${FH}', 'Poppins', sans-serif`); root.setProperty('--fb', `'${FB}', 'Poppins', sans-serif`);
   root.setProperty('--u', U + 'px'); root.setProperty('--r', (R * U) + 'px'); root.setProperty('--endTop', (ORI === 'portrait' ? .46 * H : .5 * H) + 'px');
   document.body.style.width = W + 'px'; document.body.style.height = H + 'px';
 
   /* ---------- background + particles ---------- */
   const bgEl = $('bg'), fx = $('fx');
-  const bgStyle = (B.style && B.style.background) || 'glow';
+  const bgStyle = CT.background || (CT.look ? LK.bg : ((B.style && B.style.background) || LK.bg));
+  const BL = [0, 1, 2].map(i => ({ x: rnd(), y: rnd(), r: (rnd() - .5) * 50, s: .55 + rnd() * .5, ph: rnd() * 6.28, c: [col.soft, col.softer, col.primary][i] }));
+  let blockEls = null;
   function background(t) {
     if (bgStyle === 'flat') { bgEl.style.background = col.background; return; }
+    if (bgStyle === 'blocks') {
+      bgEl.style.background = col.background;
+      if (!blockEls) blockEls = BL.map((b, i) => { const d = el('div', '', bgEl); Object.assign(d.style, { position: 'absolute', width: (b.s * W) + 'px', height: (b.s * W * .62) + 'px', borderRadius: (60 * U) + 'px', background: i === 2 ? rgba(b.c, .1) : rgba(b.c, i ? .9 : .55) }); return d; });
+      blockEls.forEach((d, i) => { const b = BL[i]; d.style.left = (b.x * W - b.s * W / 2 + Math.sin(t * .18 + b.ph) * 30 * U) + 'px'; d.style.top = (b.y * H - b.s * W * .31 + Math.cos(t * .15 + b.ph) * 30 * U) + 'px'; d.style.transform = `rotate(${b.r + Math.sin(t * .1 + b.ph) * 3}deg)`; });
+      return;
+    }
+    if (bgStyle === 'paper') {
+      const cx = 20 + BL[0].x * 60, cy = 15 + BL[0].y * 70;
+      bgEl.style.background = `radial-gradient(circle at ${cx}% ${cy}%, transparent ${0.36 * Math.min(W, H)}px, ${rgba(col.soft, .55)} ${0.36 * Math.min(W, H)}px, ${rgba(col.soft, .55)} ${0.36 * Math.min(W, H) + 3 * U}px, transparent ${0.36 * Math.min(W, H) + 3 * U}px),
+        repeating-linear-gradient(0deg, ${rgba(col.text, .045)} 0 ${1.5 * U}px, transparent ${1.5 * U}px ${120 * U}px), ${col.background}`;
+      return;
+    }
+    if (bgStyle === 'orbs') {
+      const orb = (b, i, a) => `radial-gradient(${0.62 * W}px ${0.62 * W}px at ${(b.x * 100 + Math.sin(t * .35 + b.ph) * 12).toFixed(1)}% ${(b.y * 100 + Math.cos(t * .3 + b.ph) * 10).toFixed(1)}%, ${rgba([col.soft, col.accent, col.primary][i], a)}, ${rgba(col.soft, 0)} 70%)`;
+      bgEl.style.background = BL.map((b, i) => orb(b, i, [.75, .35, .22][i])).join(',') + `, ${col.background}`;
+      return;
+    }
     const g = `radial-gradient(${0.75 * W}px ${0.6 * H}px at ${15 + Math.sin(t * .3) * 4}% ${88 + Math.cos(t * .25) * 3}%, ${rgba(col.soft, .45)}, ${rgba(col.soft, 0)} 70%),
       radial-gradient(${0.7 * W}px ${0.55 * H}px at ${88 - Math.sin(t * .27) * 4}% ${10 + Math.cos(t * .22) * 3}%, ${rgba(col.softer, .9)}, ${rgba(col.softer, 0)} 70%),
       radial-gradient(${0.85 * W}px ${0.8 * H}px at 50% 55%, rgba(255,255,255,.55), rgba(255,255,255,0) 70%)`;
@@ -57,7 +91,8 @@
     bgEl.style.background = g + grid + `, ${col.background}`;
   }
   const parts = [];
-  if (fx) { fx.setAttribute('width', W); fx.setAttribute('height', H); for (let i = 0; i < Math.round(30 * (W * H) / (1080 * 1920)) + 12; i++) parts.push({ c: sv('circle', fx), x: rnd() * W, y: rnd() * H, r: (3 + rnd() * 9) * U, vy: -(14 + rnd() * 30) * U, ph: rnd() * 6.28, col: [col.soft, col.accent, col.softer, col.primary][i % 4], o: .2 + rnd() * .4 }); }
+  const PARTS = CT.particles != null ? CT.particles : (CT.look ? LK.parts : ((B.style && B.style.particles != null) ? B.style.particles : LK.parts));
+  if (fx && PARTS) { fx.setAttribute('width', W); fx.setAttribute('height', H); for (let i = 0; i < Math.round(30 * (W * H) / (1080 * 1920)) + 12; i++) parts.push({ c: sv('circle', fx), x: rnd() * W, y: rnd() * H, r: (3 + rnd() * 9) * U, vy: -(14 + rnd() * 30) * U, ph: rnd() * 6.28, col: [col.soft, col.accent, col.softer, col.primary][i % 4], o: .2 + rnd() * .4 }); }
   function particles(clock, on = 1) { parts.forEach(p => { const y = ((p.y + p.vy * clock) % H + H) % H; p.c.setAttribute('cx', p.x + Math.sin(clock * .6 + p.ph) * 18 * U); p.c.setAttribute('cy', y); p.c.setAttribute('r', p.r); p.c.setAttribute('fill', p.col); p.c.setAttribute('opacity', p.o * on); }); }
 
   /* ---------- icons ---------- */
@@ -114,10 +149,14 @@
     if (t > last + .7 || (opts.hideAfter && t > opts.hideAfter)) { capEl.innerHTML = ''; return; }
     let ci = 0; for (let k = 0; k < CH.length; k++) if (t >= WORDS[CH[k][0]].s - .06) ci = k;
     const ids = CH[ci], cs = WORDS[ids[0]].s;
-    capEl.innerHTML = ids.map((i, j) => {
-      const w = WORDS[i]; const pin = (ci === 0 && t < .5) ? 1 : eOut(P(t, cs - .06 + j * .05, .32)); const on = t >= w.s && t < w.e + .05; const kw = KW.test(w.w.replace(/^[^\w]+/, ''));
-      return `<span class="${on ? 'on' : ''} ${kw && !on ? 'kw' : ''}" style="transform:rotateX(${(1 - pin) * -85}deg) translateY(${(1 - pin) * 30 * U}px) scale(${on ? 1.06 : 1});opacity:${pin}">${w.w}</span>`;
+    const html = ids.map((i, j) => {
+      const w = WORDS[i]; const pin = (ci === 0 && t < .5) ? 1 : eOut(P(t, cs - .06 + j * .05, LK.cap === 'pop' ? .22 : .32)); const on = t >= w.s && t < w.e + .05; const kw = KW.test(w.w.replace(/^[^\w]+/, ''));
+      const cls = `w ${on ? 'on' : ''} ${kw && !on ? 'kw' : ''}`;
+      if (LK.cap === 'rise') return `<span class="${cls}"><i style="transform:translateY(${(1 - pin) * 110}%);opacity:${pin > 0 ? 1 : 0}">${w.w}</i></span>`;
+      if (LK.cap === 'pop') return `<span class="${cls}" style="transform:scale(${lerp(1.7, 1, eBack(pin))}) rotate(${(1 - pin) * (j % 2 ? 6 : -6)}deg);opacity:${clamp(pin * 2)}"><i>${w.w}</i></span>`;
+      return `<span class="${cls}" style="transform:rotateX(${(1 - pin) * -85}deg) translateY(${(1 - pin) * 30 * U}px) scale(${on ? 1.06 : 1});opacity:${pin}"><i>${w.w}</i></span>`;
     }).join('');
+    capEl.innerHTML = LK.cap === 'glass' ? `<div class="ms-capbox">${html}</div>` : html;
     capEl.style.opacity = t > last + .3 ? 1 - P(t, last + .3, .4) : 1;
   }
 
@@ -138,5 +177,5 @@
     endEls.parts.forEach((x, i) => { const p = eOut(P(t, t0 + [.6, .95, 1.35, 1.35][i], .5)); x.style.opacity = p; x.style.transform = `translateY(${(1 - p) * 24 * U}px)`; x.style.filter = `blur(${(1 - p) * 6}px)`; });
   }
 
-  window.MS = { C, W, H, U, ORI, col, clamp, P, lerp, eOut, eIn, eIO, eBack, pulse, NS, $, el, sv, rnd, hex2rgb, rgb2hex, mixHex, contrast, rgba, icon, arrowSvg, background, particles, createGem, setupCaptions, captions, setupEnd, endCard, WORDS, PR, B, CT };
+  window.MS = { LOOK, LK, LOOKS, C, W, H, U, ORI, col, clamp, P, lerp, eOut, eIn, eIO, eBack, pulse, NS, $, el, sv, rnd, hex2rgb, rgb2hex, mixHex, contrast, rgba, icon, arrowSvg, background, particles, createGem, setupCaptions, captions, setupEnd, endCard, WORDS, PR, B, CT };
 })();

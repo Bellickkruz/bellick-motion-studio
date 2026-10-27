@@ -2,6 +2,21 @@
 
 All times are in seconds on the video timeline. Colours, fonts and the logo come from the brand and product files, never from content.json.
 
+## Looks and variety (both templates)
+Every video has a **look**, a full visual personality covering type, cards, captions, background and transitions. Each video also gets a **seed** that varies layout details: wipe and entry directions, background shapes, radar positions and so on. Two videos in the same look and brand still come out different.
+
+| look | feel | captions | background | default scene transition |
+|---|---|---|---|---|
+| `soft` | Rounded cards, soft glows, gentle rises | Words flip up | Soft colour glows + particles | rise (direction varies) |
+| `bold` | Heavy uppercase display type (Archivo), hard offset shadows, punchy | Words slam in, active word in an accent box | Big tilted colour blocks | slam + flash, hard cut out |
+| `editorial` | Calm magazine feel, serif display (Fraunces), hairlines, italics on accent words | Words rise out of a mask, active word underlined | Paper lines + one outline circle | wipe (direction varies) |
+| `glass` | Frosted translucent cards, colour orbs, depth | Captions in a frosted pill | Moving colour orbs + particles | blur in / blur out |
+
+- `"look"` in content.json picks it (default: `brand.style.look`, else `soft`).
+- `"seed"`: any integer. Omit it to derive one from the words, so a new video gets new variations automatically. Change it to reshuffle the variations without changing the look.
+- `brand.style.lock_fonts: true` keeps the brand's own fonts in every look. `"displayFont"` picks a bundled font for display text.
+- A scene's own `in` and `out` still override the look's transitions.
+
 ## Shared fields
 ```json
 {
@@ -66,6 +81,33 @@ Scene times are absolute. Inside a scene, any `at` value is relative to that sce
 ]}
 ```
 A scene starting at 0 is fully visible on frame 1. Captions use `captions.videoY` and `videoSize` over footage, and `y` and `size` over animation.
+
+### Scenes added in v0.6
+| type | what it shows | params |
+|---|---|---|
+| `podium` | Prize/ranking podium, 2–1–3, columns rise on cue; optional row of extra chips | `title`, `places: [{amount, label?, at}]` (1st first), `extras: {label, count, value, at, stagger}` |
+| `radar` | Radar sweep that pings items, then shrinks to a compared list with bars and a result chip | `items: [{label, at, value?0-1}]`, `listAt`, `listTitle`, `result: {text, at}` |
+| `screen` | The user's own **screen recording** playing inside a clean window frame | `src` (folder of `s0001.jpg…`, relative to content.json), `aspect` (width/height of the crop), `title` (window bar text), `start`, `dark` (default true), `chip: {text, at, icon}` |
+| `series` | Fan of numbered video thumbnails ("01/13"), for announcing a series | `title` (may contain `<br>`), `sub`, `total`, `stagger`, `chip: {text, at, icon}` |
+
+Upgrades to existing scenes:
+- `counter`: `dots` draws N winner or item dots popping around the ring, and `badge` adds a chip above it.
+- `footage`: `punch: [at, scale]` is a quick punch-in zoom for an emphatic line.
+
+**Screen recordings: privacy first.** Before extracting frames, look at a frame and crop out anything personal: email addresses, balances, wallet addresses, names, notifications. The crop goes in the ffmpeg command, which also sets the playback speed (here 11s of recording, played back over the scene):
+`ffmpeg -ss 1 -i rec.mov -t 11 -vf "fps=12.5,crop=W:H:X:Y" -q:v 2 scr/s%04d.jpg`, then set `aspect` to W/H. Frames play back at 30fps from `start`, so pick the extraction fps to fit the scene length.
+
+### Overlays (any template)
+Chips and buttons that sit on top of whatever is on screen, including full-frame footage:
+```json
+"overlays": [
+  {"type": "chip", "t0": 0.45, "t1": 3.0, "y": 0.07, "logo": true, "text": "PayBox Hackathon", "sub": "Winners announced · Fri 23 Oct"},
+  {"type": "chip", "t0": 7.5, "t1": 8.3, "y": 0.07, "icon": "search", "text": "Market Radar", "sub": "My build"},
+  {"type": "button", "t0": 51.2, "t1": 52.7, "y": 0.85, "icon": "user", "text": "Follow", "tapAt": 51.75, "tapText": "Following"},
+  {"type": "button", "t0": 53.0, "t1": 55.3, "y": 0.85, "light": true, "icon": "arrow", "text": "Share"}
+]
+```
+`y` is a fraction of the height. Keep overlays clear of the captions (on footage, captions sit around `captions.videoY`) and of the face.
 
 Icons: check, arrow, spark, bolt, shield, clock, chart, chat, wallet, lock, user, globe, heart, star, key, search, cart, play.
 

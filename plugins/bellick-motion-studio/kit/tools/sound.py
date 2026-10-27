@@ -415,6 +415,24 @@ def cues_from_content(ct, template, dur, end):
                 sw = s.get('switchAt', 1.2); add(at(sw + 0.1), 'whoosh', gain=0.7); add(at(sw + 0.6), 'blip', gain=0.7)
             elif ty == 'checklist':
                 for k in range(len(s.get('items', []))): add(at(0.3 + k * s.get('stagger', 0.5) + 0.27), 'pop')
+            elif ty == 'podium':
+                for k, pl in enumerate(s.get('places', [])[:3]): add(at((pl.get('at') if pl.get('at') is not None else .3 + k * .5) + .1), 'thud')
+                E = s.get('extras')
+                if E:
+                    for k in range(min(12, E.get('count', 0))): add(at((E.get('at') if E.get('at') is not None else 2) + k * E.get('stagger', .2)), 'pop', gain=0.4)
+            elif ty == 'radar':
+                add(at(0.2), 'whoosh', gain=0.6)
+                for k, it in enumerate(s.get('items', [])[:6]): add(at(it.get('at') if it.get('at') is not None else .4 + k * .35), 'blip', gain=0.5)
+                if s.get('listAt') is not None: add(at(s['listAt'] + .05), 'swish', gain=0.7)
+                if s.get('result'): add(at((s['result'].get('at') if s['result'].get('at') is not None else (s.get('listAt') or 1) + 1.2)), 'success', gain=0.8)
+            elif ty == 'screen':
+                add(at(0.15), 'whoosh', gain=0.6)
+                if s.get('chip'): add(at(s['chip'].get('at', 1)), 'pop', gain=0.8)
+            elif ty == 'series':
+                for k in range(min(5, s.get('total', 5))): add(at(.9 + k * s.get('stagger', .45)), 'swish', gain=0.6)
+                if s.get('chip'): add(at(s['chip'].get('at', 3)), 'pop')
+            elif ty == 'footage' and s.get('punch'):
+                add(at(s['punch'][0]), 'impact', gain=0.5)
             elif ty == 'statement':
                 for k in range(min(8, len((s.get('text') or '').split()))): add(at(0.1 + k * 0.09 + 0.12), 'thud', gain=0.6 if k else 0.9)
     else:  # ugc callouts
@@ -433,6 +451,9 @@ def cues_from_content(ct, template, dur, end):
                     else: add(a['tapAt'] + 0.4, 'success', gain=0.8)
             elif ty == 'stat': counting(t0 + 0.2, c.get('countDur', 1.2), c.get('from', 0), c.get('to', 0))
             elif ty in ('card', 'chip'): add(t0 + 0.25, 'pop', gain=0.8)
+    for o in ct.get('overlays', []):
+        add(o.get('t0', 0) + .1, 'swish', gain=0.7)
+        if o.get('type') == 'button' and o.get('tapAt') is not None: add(o['tapAt'], 'click'); add(o['tapAt'] + .1, 'blip', gain=0.6)
     if end is not None and end < dur:
         add(end + 0.25, 'shimmer', dur=0.7); add(end + 0.25, 'chime')
     # de-duplicate: same family within 0.18s keeps the louder one
