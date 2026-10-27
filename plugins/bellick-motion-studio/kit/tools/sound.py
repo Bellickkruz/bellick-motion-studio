@@ -431,8 +431,30 @@ def cues_from_content(ct, template, dur, end):
             elif ty == 'series':
                 for k in range(min(5, s.get('total', 5))): add(at(.9 + k * s.get('stagger', .45)), 'swish', gain=0.6)
                 if s.get('chip'): add(at(s['chip'].get('at', 3)), 'pop')
+            elif ty == 'bounce':
+                n = s.get('bounces', 3); d = s.get('dur', 2.4)
+                for k in range(n): add(at((k + 1) / n * d), 'thud', gain=0.8 - k * .15)
+            elif ty == 'curve': add(at(.3), 'riser', dur=1.4, gain=0.4); add(at(.3 + s.get('drawDur', 1.6)), 'success', gain=0.7)
+            elif ty == 'morph':
+                for k in range(len(s.get('shapes', ['circle', 'square', 'star', 'blob'])) - 1): add(at(.3 + k * s.get('every', 1.1)), 'swish', gain=0.5)
+            elif ty == 'marquee': add(at(0.05), 'whoosh', gain=0.7)
+            elif ty == 'particles':
+                add(at(0.1), 'shimmer', dur=0.6, gain=0.6)
+                if s.get('morphAt') is not None: add(at(s['morphAt']), 'whoosh', gain=0.5)
+            elif ty == 'field': add(at(0.1), 'whoosh', gain=0.5)
+            elif ty == 'screens3d': add(at(0.1), 'whoosh', gain=0.6); add(at(0.4), 'swish', gain=0.5)
+            elif ty == 'ticks':
+                for k in range(8): add(at(.1 + k * s.get('drawDur', 1.2) / 8), 'tick', gain=0.6)
+                add(at(.35), 'thud', gain=0.7)
+            elif ty == 'chips':
+                for k in range(min(8, len(s.get('items', [])))): add(at(.35 + k * s.get('stagger', .14)), 'pop', gain=0.6)
             elif ty == 'footage' and s.get('punch'):
                 add(at(s['punch'][0]), 'impact', gain=0.5)
+            elif ty == 'statement' and s.get('anim') in ('type', 'scramble'):
+                txt = s.get('text', ''); cps = s.get('cps', 24)
+                for k, ch in enumerate(txt):
+                    if ch.strip() and k % 2 == 0: add(at(.1 + k / cps if s.get('anim') == 'type' else .1 + k * .035), 'key', gain=0.6)
+                if s.get('highlight'): add(at(.1 + len(txt) / cps + .2), 'swish', gain=0.5)
             elif ty == 'statement':
                 for k in range(min(8, len((s.get('text') or '').split()))): add(at(0.1 + k * 0.09 + 0.12), 'thud', gain=0.6 if k else 0.9)
     else:  # ugc callouts

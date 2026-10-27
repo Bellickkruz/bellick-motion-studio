@@ -21,6 +21,13 @@ w, h = map(int, a.format.lower().split('x'))
 frames = os.path.abspath(a.frames) if a.frames else None
 fc = a.frame_count or (len(glob.glob(os.path.join(frames, 'f*.jpg'))) if frames else 0)
 for sc in content.get('scenes', []):
+    if sc.get('images'):
+        out = []
+        for im in sc['images']:
+            q = im if os.path.isabs(im) else os.path.join(os.path.dirname(os.path.abspath(a.content)), im)
+            if not os.path.exists(q): sys.exit(f'missing image: {q}')
+            out.append('file://' + q)
+        sc['_imgs'] = out
     if sc.get('type') == 'screen' and sc.get('src'):
         d = sc['src'] if os.path.isabs(sc['src']) else os.path.join(os.path.dirname(os.path.abspath(a.content)), sc['src'])
         if not os.path.isdir(d): sys.exit(f'missing screen frames folder: {d}')
@@ -34,6 +41,7 @@ want = {(brand.get('font') or {}).get('heading', 'Poppins'), (brand.get('font') 
 look = content.get('look') or (brand.get('style') or {}).get('look') or 'soft'
 if not (brand.get('style') or {}).get('lock_fonts'):
     want.add(content.get('displayFont') or {'bold': 'Archivo', 'editorial': 'Fraunces'}.get(look, (brand.get('font') or {}).get('heading', 'Poppins')))
+if look == 'reel': want.add('Space Grotesk')
 css = []
 for fam in want:
     if fam not in reg: print(f'warning: font {fam} not bundled, falling back to Poppins', file=sys.stderr); continue
