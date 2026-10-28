@@ -37,8 +37,17 @@ Ask the user to pick one of the three styles below, showing each with its one-li
 | **Partial: graphics over your footage** | "You stay on screen the whole time, with captions and animated cards on top." | Their clip | `ugc` | Full-frame footage, word-timed captions, callout cards (prompt bar, A→B transform with approve tap, feature card, stat, chip) |
 | **Partial: mixed cuts** | "The video cuts between you on camera and full-screen animated scenes, for example your face for the hook and the call to action, and animation for the explanation." | Their clip | `motion` + `--frames` | `footage` scenes (full-frame, or framed as a card) interleaved with animated scenes on one timeline; captions switch style automatically |
 
-**Then, in the same step, the look.** Ask which look the video should have: **Soft**, **Bold**, **Editorial**, **Glass**, **Reel** or **Night** (one-line feel for each, from `references/content-schema.md`), plus **"Surprise me"**. AskUserQuestion has room for 4 options, so offer the 3 that best fit the product's tone plus "Surprise me", and name the others in the question text. Don't offer **Night** when the brand fixes its background.
-- For "Surprise me", pick a look that differs from their last video. A brand pack's `brand.json` can record `"last_looks"`; update it in the pack you hand back.
+**The look comes from the idea, not a menu.** By default, don't ask the user to pick a look. The video's concept (see Creative direction) decides the edit style, so the way the video moves tells the same story as what it says. Some examples:
+- A calm explainer about trust might be editorial: slow wipes and quiet serif type.
+- A launch or a big win might be bold: slams, hard cuts and a highlight on the number.
+- A technical or "how it works" story might be reel: a HUD, a hero dot carrying one thread through every scene, and colour-field chapters.
+- A late-night product reveal might be night, if the brand allows dark backgrounds.
+
+Mixing is allowed when the story turns: for example, footage in a calm look that hard-cuts into one bold signature moment. Override the look per scene with `in` and `out` and the text `anim`.
+- In the storyboard, state the look you chose and **why it fits this story** in one line, so the user can redirect.
+- In step 4, offer **"Let the idea decide"** as the first and default option. The user can still name a look (Soft, Bold, Editorial, Glass, Reel or Night) if they want one.
+- Never offer Night when the brand fixes its background.
+- When the idea decides, it should still differ from the creator's last video's look, unless the story clearly calls for the same one. A brand pack's `brand.json` can record `"last_looks"`; update it in the pack you hand back.
 - Never default every video to the same look.
 - Within a look, a new video automatically gets new variations (`seed`), and changing the seed reshuffles them. Use that when a creator says two videos "feel the same".
 
