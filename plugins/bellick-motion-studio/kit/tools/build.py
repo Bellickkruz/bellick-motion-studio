@@ -46,7 +46,6 @@ want = {(brand.get('font') or {}).get('heading', 'Poppins'), (brand.get('font') 
 look = content.get('look') or (brand.get('style') or {}).get('look') or 'soft'
 if not (brand.get('style') or {}).get('lock_fonts'):
     want.add(content.get('displayFont') or {'bold': 'Archivo', 'editorial': 'Fraunces'}.get(look, (brand.get('font') or {}).get('heading', 'Poppins')))
-if look == 'reel': want.add('Space Grotesk')
 css = []
 for fam in want:
     if fam not in reg: print(f'warning: font {fam} not bundled, falling back to Poppins', file=sys.stderr); continue

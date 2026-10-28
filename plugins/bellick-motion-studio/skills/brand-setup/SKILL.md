@@ -7,9 +7,6 @@ description: Sets up a creator's brand for Bellick Motion Studio videos from the
 
 Goal: a `brand.json` describing the creator's look (colours by role, fonts, shape, credit line, avatar, colours to avoid) that every Bellick Motion Studio video uses. `KIT` is the plugin's `kit` folder, two levels above this skill's base directory.
 
-## Background rules
-If the creator says their background must always be one colour (for example "the background stays cream"), set `"style": {"fixed_background": true}` in `brand.json`. Looks then keep that background: no dark Night look, and no colour-field cuts in Reel.
-
 ## Steps
 1. **Collect** the creator's name (or handle), their avatar or profile image (optional; used small beside the credit), their logo (optional), any brand colours or fonts they already have, and colours they never want. Ask in one short message, and accept whatever they have.
 2. **Pull colours from the logo** when one is provided: `python3 -I $KIT/tools/palette.py <logo> palette.json`. It returns the logo's main colours and a proposed palette by role, with contrast checks. If the user named exact colours, those win.

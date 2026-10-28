@@ -37,7 +37,7 @@ Open each step with a header and a progress line, then the step's question (use 
 | 1 | **Video** | "Drop your clip, or paste your script." Note its length and shape. | They already sent a clip or script |
 | 2 | **Brand** | Run the **brand-setup** skill (its own questions all belong to this step) | A brand pack or `brand.json` is already in the chat |
 | 3 | **Product** | Run the **product-setup** skill, or offer "Skip: this video doesn't promote a product" | A product pack is in the chat, or they said it promotes nothing |
-| 4 | **Style & look** | Full motion design, graphics over footage, or mixed cuts; with the look decided by the video's idea by default ("Let the idea decide"); the user can still name Soft, Bold, Editorial, Glass, Reel or Night (details in make-video) | Script with no clip: only Full motion design fits, so tick it and say why |
+| 4 | **Style & look** | Full motion design, graphics over footage, or mixed cuts; with the look decided by the video's idea by default ("Let the idea decide"); the user can still name Soft, Bold, Editorial or Glass (details in make-video) | Script with no clip: only Full motion design fits, so tick it and say why |
 | 5 | **Voice** | Their own recorded voice, or an AI voice (calm female or steady male, English only) | Their clip already has them speaking: "✓ Voice: yours, from the clip" |
 | 6 | **Music** | No music (first), built-in music (calm, upbeat or minimal), or their own track | A brand pack says they always want none |
 | 7 | **Effects** | No sound effects (first), or add sound effects | Same as Music |

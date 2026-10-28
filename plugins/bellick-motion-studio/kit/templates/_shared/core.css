@@ -58,19 +58,3 @@ html,body{margin:0;overflow:hidden;background:var(--bg);font-family:var(--fb);co
 .look-bold .ttl,.look-bold .stmt,.look-bold .ms-cap,.look-bold .ms-name{font-family:var(--fd)}
 .look-editorial .ttl,.look-editorial .stmt,.look-editorial .ms-name{font-family:var(--fd);font-weight:500}
 .look-editorial .stmt span.a{font-style:italic}
-/* reel */
-.look-reel .ttl,.look-reel .stmt{font-weight:800;letter-spacing:-.035em}
-.look-reel .ms-card{box-shadow:none;border:calc(2*var(--u)) solid color-mix(in srgb,var(--text) 18%,transparent);border-radius:calc(var(--r)*.4)}
-.look-reel .ms-cap span.w{overflow:hidden;padding-bottom:.06em}
-.look-reel .ms-cap span i{margin:0}
-.ms-hero{position:absolute;left:0;top:0;border-radius:50%;background:var(--accent);z-index:34;pointer-events:none;box-shadow:0 0 calc(30*var(--u)) color-mix(in srgb,var(--accent) 55%,transparent)}
-/* night */
-.look-night .ms-card{background:color-mix(in srgb,var(--surface) 85%,transparent);border:calc(2*var(--u)) solid color-mix(in srgb,var(--text) 12%,transparent);box-shadow:0 calc(40*var(--u)) calc(90*var(--u)) rgba(0,0,0,.5)}
-.look-night .ms-chip{background:var(--surface);border-color:color-mix(in srgb,var(--text) 14%,transparent)}
-.look-night .ttl,.look-night .stmt{font-weight:600;letter-spacing:-.025em}
-.ms-cap span .hb{position:absolute;left:-.08em;right:-.08em;top:12%;bottom:6%;background:var(--accent);border-radius:.12em;transform-origin:0 50%;z-index:-1;display:block}
-.ms-cap span.w{position:relative}
-.look-night .ms-cap span.on{color:var(--onAccent)}
-.ms-wash{position:absolute;inset:0;z-index:58;pointer-events:none;opacity:0}
-.ms-card,.ms-chip{color:var(--cardtext,var(--text))}
-[data-field=dark] .ms-card{--text:var(--cardtext);--ink:var(--cardtext)}

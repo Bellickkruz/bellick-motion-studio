@@ -11,10 +11,6 @@ Every video has a **look**, a full visual personality covering type, cards, capt
 | `bold` | Heavy uppercase display type (Archivo), hard offset shadows, punchy | Words slam in, active word in an accent box | Big tilted colour blocks | slam + flash, hard cut out |
 | `editorial` | Calm magazine feel, serif display (Fraunces), hairlines, italics on accent words | Words rise out of a mask, active word underlined | Paper lines + one outline circle | wipe (direction varies) |
 | `glass` | Frosted translucent cards, colour orbs, depth | Captions in a frosted pill | Moving colour orbs + particles | blur in / blur out |
-| `reel` | Design-reel: one **hero dot** that travels through the video, kinetic type, chapter-like scenes | Letters rise one by one | **Colour-field cuts** per scene from the palette (off when the brand fixes its background) | rise in, fade out |
-| `night` | Dark cinematic product video built from the brand's own colours: atmospheric glow, vignette, accent washes between sections | Active word on an accent highlight bar | Dark glow + vignette | blur dissolve + accent wash |
-
-**Brands that fix their background.** If `brand.style.fixed_background` is true (for example "background is always cream"), `night` is never offered: it falls back to `glass` if requested. `reel` keeps the brand background, so there are no colour fields, but the hero dot and kinetic type stay. Set `fixed_background` during brand setup whenever the creator states a background rule. In reel, a scene can force its field with `"field": "bg|softer|soft|accent|primary|dark"`,.
 
 - `"look"` in content.json picks it (default: `brand.style.look`, else `soft`).
 - `"seed"`: any integer. Omit it to derive one from the words, so a new video gets new variations automatically. Change it to reshuffle the variations without changing the look.
@@ -101,46 +97,6 @@ Upgrades to existing scenes:
 **Screen recordings: privacy first.** Before extracting frames, look at a frame and crop out anything personal: email addresses, balances, wallet addresses, names, notifications. The crop goes in the ffmpeg command, which also sets the playback speed (here 11s of recording, played back over the scene):
 `ffmpeg -ss 1 -i rec.mov -t 11 -vf "fps=12.5,crop=W:H:X:Y" -q:v 2 scr/s%04d.jpg`, then set `aspect` to W/H. Frames play back at 30fps from `start`, so pick the extraction fps to fit the scene length.
 
-### Text animations (`statement` scene)
-`"anim"` picks how the words arrive. The default follows the look.
-
-| anim | effect |
-|---|---|
-| `flip` | Words flip up (soft) |
-| `slam` | Words slam in with a little rotation (bold) |
-| `mask` | Words rise out of a mask (editorial) |
-| `blur` | Words sharpen out of a blur (glass) |
-| `letters` | Letter-by-letter rise (reel) |
-| `type` | Typewriter with a blinking cursor (`cps` sets the speed) |
-| `highlight` | Words blur in, then an accent bar sweeps behind `highlight` words (night). It also works with `type` |
-| `underline` | Accent words get a drawn underline |
-| `scramble` | Letters decode from random glyphs |
-| `outline` | Outlined letters that fill in (`fillAt`) |
-
-Extra params:
-- `highlight: [words]`: words that get the highlight bar.
-- `accent: [words]`: words in the accent colour.
-- `outAnim: "blur"`: dissolves out at the end of the scene.
-- `prompt: {text, at, dur, placeholder}`: a prompt bar typing under the headline.
-- `y`: vertical position, as a fraction of the height.
-
-In `reel`, the hero dot lands as the full stop after the last word.
-
-### Scenes added in v0.7
-| type | what it shows | params |
-|---|---|---|
-| `bounce` | A ball bouncing on a baseline with squash and stretch, a dotted trail and time ticks (the hero dot in reel) | `label`, `bounces`, `dur`, `tickLabel` |
-| `curve` | Animated growth or easing curve with a value counting up and optional slider rows | `points: [0..1]`, `value: "+240%"`, `label`, `rows: [names]`, `drawDur` |
-| `morph` | Shape morphing (circle → square → star → blob → diamond) inside a bounding box with handles and a size readout | `shapes`, `every`, `label` |
-| `marquee` | A word repeated in outlined rows on a tilted plane, rows scrolling in opposite directions, with the accent dot replacing an O | `word`, `size`, `tilt`, `speed` |
-| `particles` | Dot sphere that rotates and morphs into a ring | `morphAt`, `count`, `label` |
-| `field` | A grid of short lines that all turn to face a moving dot | `label` |
-| `screens3d` | The user's own screenshots floating in 3D with depth-of-field blur and a slow camera push (placeholder UI if no images) | `images: [paths]`, `headline`, `aspect`, `push` |
-| `ticks` | A dashed tick ring drawing around a big stat | `text`, `accent`, `sub`, `ticks`, `drawDur` |
-| `chips` | A grid of integration or feature chips with glowing dots | `title`, `accent`, `items: [{label, sub}]`, `stagger` |
-
-Screenshots for `screens3d` need the same privacy check as screen recordings: crop out emails, balances, wallet addresses and names first.
-
 ### Custom scenes (written for one video)
 When the concept needs something the library doesn't have, write it. Put the code in a file in the job folder and list it in content.json:
 ```json
@@ -161,7 +117,6 @@ Rules for custom scenes:
 - **Deterministic:** the scene draws purely from `lt`, so any frame can be rendered on its own. Use `MS.rnd()` only while building.
 - **Fits any shape:** size things from `ST` (the safe area), `W`, `H` and `U`. Check portrait, landscape and square if the video could be reformatted.
 - **Stays clear of the captions band**, unless captions are off for that scene.
-- **Can set `root._hero = lt => ({x, y, r})`** so the Reel hero dot visits it.
 - Look at stills of every custom scene before rendering.
 
 ### Overlays (any template)

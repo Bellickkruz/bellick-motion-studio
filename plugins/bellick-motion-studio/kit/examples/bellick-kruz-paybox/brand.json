@@ -21,8 +21,7 @@
  "style": {
   "mood": "minimal, premium product explainer; restrained 3D, soft shadows, glowing purple lines",
   "background": "glow",
-  "corner": 40,
-  "fixed_background": true
+  "corner": 40
  },
  "rules": [
   "Background is always warm cream, never dark or purple",

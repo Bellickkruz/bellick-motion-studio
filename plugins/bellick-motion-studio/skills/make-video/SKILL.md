@@ -40,13 +40,10 @@ Ask the user to pick one of the three styles below, showing each with its one-li
 **The look comes from the idea, not a menu.** By default, don't ask the user to pick a look. The video's concept (see Creative direction) decides the edit style, so the way the video moves tells the same story as what it says. Some examples:
 - A calm explainer about trust might be editorial: slow wipes and quiet serif type.
 - A launch or a big win might be bold: slams, hard cuts and a highlight on the number.
-- A technical or "how it works" story might be reel: a hero dot carrying one thread through every scene, and colour-field chapters.
-- A late-night product reveal might be night, if the brand allows dark backgrounds.
 
-Mixing is allowed when the story turns: for example, footage in a calm look that hard-cuts into one bold signature moment. Override the look per scene with `in` and `out` and the text `anim`.
+Mixing is allowed when the story turns: for example, footage in a calm look that hard-cuts into one bold signature moment. Override the look per scene with `in` and `out`.
 - In the storyboard, state the look you chose and **why it fits this story** in one line, so the user can redirect.
-- In step 4, offer **"Let the idea decide"** as the first and default option. The user can still name a look (Soft, Bold, Editorial, Glass, Reel or Night) if they want one.
-- Never offer Night when the brand fixes its background.
+- In step 4, offer **"Let the idea decide"** as the first and default option. The user can still name a look (Soft, Bold, Editorial or Glass) if they want one.
 - When the idea decides, it should still differ from the creator's last video's look, unless the story clearly calls for the same one. A brand pack's `brand.json` can record `"last_looks"`; update it in the pack you hand back.
 - Never default every video to the same look.
 - Within a look, a new video automatically gets new variations (`seed`), and changing the seed reshuffles them. Use that when a creator says two videos "feel the same".
@@ -88,7 +85,7 @@ After step 8, send the setup summary (all eight choices) and start the pipeline.
    ```
    Compare the two passes. Brand names, tickers and slang are often misheard (for example "PayBox" came back as "pay box" and "K-Box", "BNB" as "BMB", and "SOL" as "Soul"). **Send the transcript with timestamps, list every uncertain word, and ask the user to confirm.** Never guess silently. Keep it skimmable: mark only the doubtful words, and if you can, send a 3-second clip of each doubtful spot so they can just listen.
 4. **Fact-check** the confirmed script against `product.json`: flag lines that hit `avoid_claims` or state unconfirmed facts. Their spoken words stay, but on-screen graphics use safe wording, and the `footnote` covers simplifications.
-5. **Storyboard:** a table of time, spoken line, visual and accuracy note, opened with the chosen style and look (plus a Sound column and the mood or "your track" when sound is on). For mixed cuts, mark each row **On camera** or **Animated**. For animated scenes, pick scenes from the library that make each line visible, one idea per scene, and vary the scene mix from the creator's previous video (podium, radar, screen, series, counter, phone, flow, cards, compare, checklist, statement with its text animations, logo, hero, bounce, curve, morph, marquee, particles, field, screens3d, ticks, chips), with at least one transformation moment (a dive, a morph, or a freeze and release). Include the hook in frame 1. Propose, then wait for **"start"**.
+5. **Storyboard:** a table of time, spoken line, visual and accuracy note, opened with the chosen style and look (plus a Sound column and the mood or "your track" when sound is on). For mixed cuts, mark each row **On camera** or **Animated**. For animated scenes, pick scenes from the library that make each line visible, one idea per scene, and vary the scene mix from the creator's previous video (podium, radar, screen, series, counter, phone, flow, cards, compare, checklist, statement, logo, hero), with at least one transformation moment (a dive, a morph, or a freeze and release). Include the hook in frame 1. Propose, then wait for **"start"**.
 6. **Build:**
    - Phrases file `phr.json`: `[[start, end, "confirmed text"], …]` using the ASR segment times. Then `python3 -I $KIT/tools/wordtime.py clip.mp4 phr.json words.json`.
    - Write `content.json` (see the schema). Time every visual to the word that triggers it, using `words.json`.

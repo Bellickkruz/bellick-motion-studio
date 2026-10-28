@@ -33,26 +33,14 @@
     soft: { bg: 'glow', cap: 'flip', trans: 'rise', out: 'fade', parts: 1, desc: 'Rounded cards, soft glows, gentle rises' },
     bold: { bg: 'blocks', cap: 'pop', trans: 'slam', out: 'cut', parts: 0, desc: 'Heavy uppercase type, hard shadows, slams and hard cuts' },
     editorial: { bg: 'paper', cap: 'rise', trans: 'wipe', out: 'wipe', parts: 0, desc: 'Calm magazine layouts, hairlines, masked text and wipes' },
-    glass: { bg: 'orbs', cap: 'glass', trans: 'blur', out: 'blur', parts: 1, desc: 'Frosted glass cards, colour orbs, depth-of-field blurs' },
-    reel: { bg: 'field', cap: 'letters', trans: 'rise', out: 'fade', parts: 0, hero: 1, desc: 'Design-reel feel: palette colour-field cuts, one recurring hero dot, kinetic type' },
-    night: { bg: 'night', cap: 'bar', trans: 'blur', out: 'blur', parts: 0, dark: 1, wash: 1, desc: 'Dark cinematic product feel: atmospheric glow, floating screens, highlight-bar words, accent washes' }
+    glass: { bg: 'orbs', cap: 'glass', trans: 'blur', out: 'blur', parts: 1, desc: 'Frosted glass cards, colour orbs, depth-of-field blurs' }
   };
-  const FIXED = !!(B.style && (B.style.fixed_background || B.style.background_lock));
-  let LOOK = LOOKS[CT.look] ? CT.look : (B.style && LOOKS[B.style.look] ? B.style.look : 'soft');
-  if (LOOK === 'night' && FIXED) { console.warn('night look needs a dark background; this brand fixes its background, using glass'); LOOK = 'glass'; }
-  const LK = LOOKS[LOOK];
+  const LOOK = LOOKS[CT.look] ? CT.look : (B.style && LOOKS[B.style.look] ? B.style.look : 'soft'); const LK = LOOKS[LOOK];
   const hashStr = str => { let h = 2166136261; for (const ch of str) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return ((h >>> 0) % 2147483645) + 1; };
   seed = CT.seed != null ? (Math.abs(CT.seed | 0) % 2147483645) + 1 : hashStr(JSON.stringify((C.words || []).map(w => w.w)) + JSON.stringify((CT.scenes || CT.callouts || []).map(x => x.type)));
   for (let i = 0; i < 5; i++) rnd();
   document.body.classList.add('look-' + LOOK);
   const col = Object.assign({ background: '#FBF7F0', text: '#2A0B3D', primary: '#7B2CBF', accent: '#B44CFF', soft: '#D7B4F3', softer: '#EDE0FA', surface: '#FFFFFF', muted: '#8A6AA0' }, B.colors || {});
-  // night look: swap to a dark palette built from the brand's own colours
-  if (LK.dark) {
-    const dk = contrast(col.text, '#000') < 2.2 ? col.text : mixHex(col.text, '#000', .45), base = mixHex(dk, '#000', .35);
-    const light = lum(col.background) > .6 ? col.background : '#F7F3FA';
-    Object.assign(col, { background: base, text: light, surface: mixHex(base, '#FFFFFF', .08), softer: mixHex(base, col.soft, .22), muted: mixHex(light, base, .45) });
-    col.soft = mixHex(col.soft, base, .25);
-  }
   // readable accent ink for text on the background
   let ink = col.accentInk || col.accent; for (let i = 0; i < 12 && contrast(ink, col.background) < 3.2; i++) ink = mixHex(ink, col.text, .15);
   col.accentInk = ink;
@@ -64,7 +52,7 @@
   const FH = (B.font && B.font.heading) || 'Poppins', FB = (B.font && B.font.body) || FH;
   const R = (B.style && B.style.corner != null) ? B.style.corner : 36; // corner radius at 1080
   const root = document.documentElement.style;
-  Object.entries({ cardtext: col.text, bg: col.background, text: col.text, primary: col.primary, accent: col.accent, ink: col.accentInk, soft: col.soft, softer: col.softer, surface: col.surface, muted: col.muted, onPrimary: col.onPrimary, onAccent: col.onAccent, line: col.line }).forEach(([k, v]) => root.setProperty('--' + k, v));
+  Object.entries({ bg: col.background, text: col.text, primary: col.primary, accent: col.accent, ink: col.accentInk, soft: col.soft, softer: col.softer, surface: col.surface, muted: col.muted, onPrimary: col.onPrimary, onAccent: col.onAccent, line: col.line }).forEach(([k, v]) => root.setProperty('--' + k, v));
   const LOOK_FONT = { bold: 'Archivo', editorial: 'Fraunces' };
   const FD = (B.style && B.style.lock_fonts) ? FH : (CT.displayFont || LOOK_FONT[LOOK] || FH);
   root.setProperty('--fd', `'${FD}', '${FH}', 'Poppins', sans-serif`);
@@ -91,14 +79,6 @@
         repeating-linear-gradient(0deg, ${rgba(col.text, .045)} 0 ${1.5 * U}px, transparent ${1.5 * U}px ${120 * U}px), ${col.background}`;
       return;
     }
-    if (bgStyle === 'night') {
-      const a = BL[0], b2 = BL[1];
-      bgEl.style.background = `radial-gradient(${0.9 * W}px ${0.7 * H}px at ${(20 + a.x * 30 + Math.sin(t * .15) * 6).toFixed(1)}% ${(70 + Math.cos(t * .12) * 6).toFixed(1)}%, ${rgba(col.accent, .16)}, ${rgba(col.accent, 0)} 70%),
-        radial-gradient(${0.8 * W}px ${0.6 * H}px at ${(70 + b2.x * 20).toFixed(1)}% ${(15 + Math.sin(t * .13) * 5).toFixed(1)}%, ${rgba(col.primary, .22)}, ${rgba(col.primary, 0)} 70%),
-        radial-gradient(${1.2 * Math.max(W, H)}px ${1.2 * Math.max(W, H)}px at 50% 50%, rgba(0,0,0,0) 45%, rgba(0,0,0,.55) 100%), ${col.background}`;
-      return;
-    }
-    if (bgStyle === 'field') { bgEl.style.background = col.background; return; }
     if (bgStyle === 'orbs') {
       const orb = (b, i, a) => `radial-gradient(${0.62 * W}px ${0.62 * W}px at ${(b.x * 100 + Math.sin(t * .35 + b.ph) * 12).toFixed(1)}% ${(b.y * 100 + Math.cos(t * .3 + b.ph) * 10).toFixed(1)}%, ${rgba([col.soft, col.accent, col.primary][i], a)}, ${rgba(col.soft, 0)} 70%)`;
       bgEl.style.background = BL.map((b, i) => orb(b, i, [.75, .35, .22][i])).join(',') + `, ${col.background}`;
@@ -173,8 +153,6 @@
       const w = WORDS[i]; const pin = (ci === 0 && t < .5) ? 1 : eOut(P(t, cs - .06 + j * .05, LK.cap === 'pop' ? .22 : .32)); const on = t >= w.s && t < w.e + .05; const kw = KW.test(w.w.replace(/^[^\w]+/, ''));
       const cls = `w ${on ? 'on' : ''} ${kw && !on ? 'kw' : ''}`;
       if (LK.cap === 'rise') return `<span class="${cls}"><i style="transform:translateY(${(1 - pin) * 110}%);opacity:${pin > 0 ? 1 : 0}">${w.w}</i></span>`;
-      if (LK.cap === 'letters') { let k0 = 0; return `<span class="${cls}">${[...w.w].map((ch, k) => { const q = (ci === 0 && t < .5) ? 1 : eOut(P(t, cs - .06 + j * .08 + k * .025, .28)); return `<i style="transform:translateY(${(1 - q) * 60}%);opacity:${q}">${ch}</i>`; }).join('')}</span>`; }
-      if (LK.cap === 'bar') return `<span class="${cls}" style="opacity:${pin};filter:blur(${((1 - pin) * 8 * U).toFixed(1)}px)"><b class="hb" style="transform:scaleX(${on ? 1 : 0})"></b><i>${w.w}</i></span>`;
       if (LK.cap === 'pop') return `<span class="${cls}" style="transform:scale(${lerp(1.7, 1, eBack(pin))}) rotate(${(1 - pin) * (j % 2 ? 6 : -6)}deg);opacity:${clamp(pin * 2)}"><i>${w.w}</i></span>`;
       return `<span class="${cls}" style="transform:rotateX(${(1 - pin) * -85}deg) translateY(${(1 - pin) * 30 * U}px) scale(${on ? 1.06 : 1});opacity:${pin}"><i>${w.w}</i></span>`;
     }).join('');
@@ -199,5 +177,5 @@
     endEls.parts.forEach((x, i) => { const p = eOut(P(t, t0 + [.6, .95, 1.35, 1.35][i], .5)); x.style.opacity = p; x.style.transform = `translateY(${(1 - p) * 24 * U}px)`; x.style.filter = `blur(${(1 - p) * 6}px)`; });
   }
 
-  window.MS = { LOOK, LK, LOOKS, FIXED, lum, C, W, H, U, ORI, col, clamp, P, lerp, eOut, eIn, eIO, eBack, pulse, NS, $, el, sv, rnd, hex2rgb, rgb2hex, mixHex, contrast, rgba, icon, arrowSvg, background, particles, createGem, setupCaptions, captions, setupEnd, endCard, WORDS, PR, B, CT };
+  window.MS = { LOOK, LK, LOOKS, C, W, H, U, ORI, col, clamp, P, lerp, eOut, eIn, eIO, eBack, pulse, NS, $, el, sv, rnd, hex2rgb, rgb2hex, mixHex, contrast, rgba, icon, arrowSvg, background, particles, createGem, setupCaptions, captions, setupEnd, endCard, WORDS, PR, B, CT };
 })();
