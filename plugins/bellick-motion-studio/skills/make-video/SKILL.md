@@ -16,7 +16,7 @@ Before the storyboard, find the video's **concept**:
 3. **One signature moment** that only this video has: a transformation, a reveal or a visual pun that carries the main point. It's the frame people would screenshot.
 4. **A motion personality** that fits the tone (calm and precise, punchy, playful, cinematic), expressed through the look, the pacing and the transitions.
 
-Open the storyboard with these four lines.
+Open the storyboard with these four lines, **kept short** (one line each). Keep the table compact, at no more than about 8 rows, with short cells. Leave technical detail out of what the creator sees.
 
 **Build what the idea needs.** If no library scene expresses the concept, write a **custom scene** for this video (see "Custom scenes" in `references/content-schema.md`). The signature moment is usually custom. Use the creator's own material wherever possible: their footage, screen recordings and screenshots, real numbers and real product names, after the fact and privacy checks.
 
@@ -86,7 +86,7 @@ After step 8, send the setup summary (all eight choices) and start the pipeline.
    x = asr.load("clip.mp4")
    for a, b in asr.speech_segments(x, max_len=3.6): print(a, b, asr.transcribe(x[int(a*16000):int(b*16000)]))
    ```
-   Compare the two passes. Brand names, tickers and slang are often misheard (for example "PayBox" came back as "pay box" and "K-Box", "BNB" as "BMB", and "SOL" as "Soul"). **Send the transcript with timestamps, list every uncertain word, and ask the user to confirm.** Never guess silently.
+   Compare the two passes. Brand names, tickers and slang are often misheard (for example "PayBox" came back as "pay box" and "K-Box", "BNB" as "BMB", and "SOL" as "Soul"). **Send the transcript with timestamps, list every uncertain word, and ask the user to confirm.** Never guess silently. Keep it skimmable: mark only the doubtful words, and if you can, send a 3-second clip of each doubtful spot so they can just listen.
 4. **Fact-check** the confirmed script against `product.json`: flag lines that hit `avoid_claims` or state unconfirmed facts. Their spoken words stay, but on-screen graphics use safe wording, and the `footnote` covers simplifications.
 5. **Storyboard:** a table of time, spoken line, visual and accuracy note, opened with the chosen style and look (plus a Sound column and the mood or "your track" when sound is on). For mixed cuts, mark each row **On camera** or **Animated**. For animated scenes, pick scenes from the library that make each line visible, one idea per scene, and vary the scene mix from the creator's previous video (podium, radar, screen, series, counter, phone, flow, cards, compare, checklist, statement with its text animations, logo, hero, bounce, curve, morph, marquee, particles, field, screens3d, ticks, chips), with at least one transformation moment (a dive, a morph, or a freeze and release). Include the hook in frame 1. Propose, then wait for **"start"**.
 6. **Build:**

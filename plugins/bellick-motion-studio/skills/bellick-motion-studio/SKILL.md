@@ -10,6 +10,20 @@ Bellick Motion Studio turns a creator's talking-head clips and scripts into fini
 ## Locate the kit
 The tools, templates, fonts and examples live in the plugin's `kit` folder, two levels above this skill's base directory (`<base>/../../kit`). Set `KIT` to that absolute path for every command. Work in a fresh folder under the working directory (for example `./ms-job-<name>`). Never write inside `KIT`.
 
+## Keep it light for the creator
+Creators want a great video, not homework. Every message should be short, friendly and plain:
+- **A sentence or two per message.** No walls of text, no jargon (frames, seeds, LUFS, templates), no explaining how things work unless they ask.
+- **As few questions as possible.** Never ask what you can infer from their clip, their brand pack or their last video. Bundle the setup into the fast lane below whenever you can.
+- **Show, don't describe.** Prefer one stills sheet over a paragraph about what the video will look like.
+- **Progress updates:** one line ("Rendering, ready around 14:20"), not a log.
+
+**Fast lane.** After step 1, if their brand (and product, when needed) is already on file, offer one choice: **"Make it for me"** (recommended) or **"Let me choose the details"**. "Make it for me" ticks steps 4–8 in one go:
+- The idea picks the style and look.
+- Their own voice if the clip has it.
+- Their usual sound and quality from the brand pack, or no added sound and 4K + Full HD.
+
+They go straight to the transcript check and a short storyboard. They can still change anything later in one line.
+
 ## Guided setup: one step at a time
 Every new video starts with a short guided setup. Ask **one step per message**, wait for the answer, confirm it in one line, then move to the next step. Never bundle several steps' questions into one message.
 
