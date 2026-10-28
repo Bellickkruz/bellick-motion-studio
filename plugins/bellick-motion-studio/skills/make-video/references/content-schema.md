@@ -22,7 +22,8 @@ Every video has a **look**, a full visual personality covering type, cards, capt
 {
   "footnote": "Illustrative flow · …",        // optional small text (falls back to none)
   "keywords": ["AI", "approve"],              // extra caption words to highlight (product name is automatic)
-  "captions": {"mode": "light|video", "y": 0.16, "size": 92, "off": false}  // optional overrides; y = fraction of height, size at 1080 scale
+  "captions": {"mode": "light|video", "y": 0.16, "size": 92, "off": false},  // optional overrides; y = fraction of height, size at 1080 scale
+  "subtitles": [[0.2, 3.1, "Please, what's going on?"]]  // optional second line under the captions, e.g. English under Pidgin
 }
 ```
 

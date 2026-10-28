@@ -79,5 +79,5 @@ It's an example. Never apply its brand or product to another user's video unless
 ## Requirements to tell users about when relevant
 - Code execution and file creation must be enabled in their Claude settings.
 - The first transcription or AI voice in a chat downloads about 1GB of models from GitHub (about 2 minutes) using `KIT/tools/setup.sh`. If their workspace blocks GitHub downloads, they can paste their transcript instead and supply their own voice recording.
-- Transcription and AI voice are English only.
+- Transcription understands English and Nigerian Pidgin (Pidgin is detected automatically, and captions keep it as spoken, with optional English subtitles). AI voices are English only.
 - Exports come in three qualities: a fast 720p preview, Full HD or 4K. Before rendering, the plugin measures this workspace's speed and shows the time each one will take. As a rough guide, a 15-second video takes about 1–2 minutes as a preview, 3–4 in Full HD and 8–10 in 4K.

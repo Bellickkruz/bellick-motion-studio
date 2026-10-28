@@ -11,6 +11,7 @@ Turn talking-head clips and scripts into branded motion-design videos, in **your
 
 - **Brand Studio:** pull colours from your logo, then mix your brand on a colour wheel with live preview and readability checks
 - **Four looks, endless variations:** Soft, Bold, Editorial or Glass, each with its own type, captions, backgrounds and transitions. Every video also gets fresh layout variations, so your videos never look alike
+- **Speaks Pidgin too:** Nigerian Pidgin is detected automatically and captioned as you said it, with optional English subtitles underneath
 - **Choose your style:** full motion design, partial with graphics over your footage, or partial with mixed cuts between you on camera and animated scenes
 - Product fact-checking, so your on-screen claims stay accurate
 - **Optional sound:** original, copyright-free music (calm, upbeat or minimal) and sound effects timed to the animation, or your own track. Music ducks under your voice automatically. Off unless you choose it.
@@ -40,7 +41,7 @@ In a new chat, say **"Bellick Motion Studio"** or *"make a branded video from th
 ## Requirements
 - A paid Claude plan with code execution and file creation turned on
 - On first use in a chat, about 1GB of open-source speech and voice models download from GitHub
-- English transcription and voice
+- Transcription in English and Nigerian Pidgin (detected automatically, with optional English subtitles); AI voice in English
 
 ## Licence
 Free to use for creating your videos, including sponsored ones. **Not open source:** copying, modifying or redistributing the plugin is not permitted. See [LICENSE](LICENSE).

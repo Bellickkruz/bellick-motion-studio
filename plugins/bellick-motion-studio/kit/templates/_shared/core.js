@@ -139,9 +139,10 @@
   const capCfg = Object.assign({ mode: 'light', y: ORI === 'portrait' ? .16 : (ORI === 'landscape' ? .1 : .12), size: ORI === 'landscape' ? 78 : 92, max: 3 }, CT.captions || {});
   const KW = new RegExp('^(' + [PR.name, ...(CT.keywords || [])].filter(Boolean).map(s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')', 'i');
   const CH = []; { let cur = []; WORDS.forEach((w, i) => { cur.push(i); if (cur.length >= capCfg.max || /[.,!?;:]$/.test(w.w)) { CH.push(cur); cur = []; } }); if (cur.length) CH.push(cur); }
-  let capEl = null;
+  let capEl = null, subEl = null; const SUBS = CT.subtitles || [];
   function setupCaptions(parent) {
     capEl = el('div', 'ms-cap ' + (capCfg.mode === 'video' ? 'onvideo' : ''), parent);
+    if (SUBS.length) subEl = el('div', 'ms-sub', parent);
     capEl.style.top = (capCfg.y * H) + 'px'; capEl.style.fontSize = (capCfg.size * U) + 'px';
   }
   function captions(t, opts = {}) {
@@ -158,6 +159,9 @@
     }).join('');
     capEl.innerHTML = LK.cap === 'glass' ? `<div class="ms-capbox">${html}</div>` : html;
     capEl.style.opacity = t > last + .3 ? 1 - P(t, last + .3, .4) : 1;
+    if (subEl) { const sb = SUBS.find(x => t >= x[0] - .05 && t < x[1] + .3); const hide = (opts.hideAfter && t > opts.hideAfter) || !capEl.innerHTML;
+      subEl.textContent = sb && !hide ? sb[2] : ''; subEl.classList.toggle('onvideo', capEl.classList.contains('onvideo'));
+      subEl.style.top = (capEl.offsetTop + capEl.offsetHeight + 14 * U) + 'px'; subEl.style.opacity = sb ? clamp(P(t, sb[0] - .05, .25)) : 0; }
   }
 
   /* ---------- end card ---------- */

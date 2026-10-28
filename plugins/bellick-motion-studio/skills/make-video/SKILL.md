@@ -77,12 +77,21 @@ After step 8, send the setup summary (all eight choices) and start the pipeline.
 ## Pipeline
 1. **Set up tools once per chat:** `bash $KIT/tools/setup.sh` (add `voice` when an AI voice is needed). If it fails because downloads are blocked, ask for a transcript and skip to step 4.
 2. **Inspect the clip:** `python3 -I $KIT/tools/ratio.py clip.mp4` gives the source shape and the design size (short side 1080). **Always use that design size, so the export matches the original's shape.** Make a contact sheet (`ffmpeg -i clip.mp4 -vf "fps=1/2,scale=240:-1,tile=8x2" -frames:v 1 sheet.jpg`) and look at it, to note where the face sits and what's visible.
-3. **Transcribe:** `python3 -I $KIT/tools/asr.py clip.mp4 tr`, then a second pass with shorter windows:
+3. **Transcribe:** `python3 -I $KIT/tools/asr.py clip.mp4 tr --vocab "<product name, brand words, names>"`. The vocabulary helps it spell brand names right (it fixed "Market Radar" and "PayBox" in testing). Then a second pass with shorter windows:
    ```python
    import sys; sys.path.insert(0, "$KIT/tools"); import asr
    x = asr.load("clip.mp4")
    for a, b in asr.speech_segments(x, max_len=3.6): print(a, b, asr.transcribe(x[int(a*16000):int(b*16000)]))
    ```
+   (set `asr.PROMPT_IDS = asr.encode(" " + vocab_or_pidgin_prompt)` first to use the same priming in this pass).
+   **Detect Nigerian Pidgin:** run `python3 -I $KIT/tools/pidgin.py tr.json`.
+   - If the verdict is `mixed` or `pidgin`, or its `suspects` list shows typical mis-hearings ("they" for dey, "what in" for wetin, "a big" for abeg, "you nah" for una), re-transcribe with `--pidgin` (plus `--vocab`) and use that pass. In testing, it turned "A big wetting day happened" back into "Abeg, wetin dey happen?".
+   - Remember the creator speaks Pidgin by saving `"language": "pcm"` in their brand pack, and use `--pidgin` from the start next time.
+   - **Captions keep their Pidgin exactly as spoken.** Never "correct" it into standard English. Use common Naija spellings: dey, wetin, na, abeg, una, sabi, don, comot, pikin, oya, wahala, make, dem, am, wey, abi, sha, sef, o.
+   - Ask once, in one line: "Want English subtitles under your Pidgin captions?" If yes, write a natural English line per phrase into `content.json` as `"subtitles": [[start, end, "English…"], …]`, using the same phrase times. Keep the meaning and tone, not a word-for-word translation.
+   - The fact check (step 4) works on the meaning, so a claim in Pidgin is checked the same way.
+   - AI voices are English only, so for a Pidgin script, ask the creator to record it themselves.
+
    Compare the two passes. Brand names, tickers and slang are often misheard (for example "PayBox" came back as "pay box" and "K-Box", "BNB" as "BMB", and "SOL" as "Soul"). **Send the transcript with timestamps, list every uncertain word, and ask the user to confirm.** Never guess silently. Keep it skimmable: mark only the doubtful words, and if you can, send a 3-second clip of each doubtful spot so they can just listen.
 4. **Fact-check** the confirmed script against `product.json`: flag lines that hit `avoid_claims` or state unconfirmed facts. Their spoken words stay, but on-screen graphics use safe wording, and the `footnote` covers simplifications.
 5. **Storyboard:** a table of time, spoken line, visual and accuracy note, opened with the chosen style and look (plus a Sound column and the mood or "your track" when sound is on). For mixed cuts, mark each row **On camera** or **Animated**. For animated scenes, pick scenes from the library that make each line visible, one idea per scene, and vary the scene mix from the creator's previous video (podium, radar, screen, series, counter, phone, flow, cards, compare, checklist, statement, logo, hero), with at least one transformation moment (a dive, a morph, or a freeze and release). Include the hook in frame 1. Propose, then wait for **"start"**.

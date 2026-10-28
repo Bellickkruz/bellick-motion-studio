@@ -1,5 +1,8 @@
 """Transcribe speech with Whisper (sherpa-onnx export) using only numpy + onnxruntime.
-Usage: python3 -I asr.py <media file> <out prefix>
+Usage: python3 -I asr.py <media file> <out prefix> [--pidgin] [--prompt "text"] [--vocab "PayBox, Market Radar"]
+  --pidgin  primes the recogniser with Nigerian Pidgin, so it keeps words like dey, wetin, abeg, una
+            instead of forcing them into English ("they", "what in", "a big", "you nah")
+  --prompt  any priming text (style, spelling, names)   --vocab  names and brand words to spell correctly
 Writes <prefix>.json (phrase segments with times) and <prefix>.srt
 """
 import sys, json, base64, subprocess
@@ -56,15 +59,37 @@ meta = enc.get_modelmeta().custom_metadata_map
 L, CTX, ST = int(meta['n_text_layer']), int(meta['n_text_ctx']), int(meta['n_text_state'])
 EOT, SOT, NOTS, NOSP, TRN, BLANK = (int(meta[k]) for k in ['eot', 'sot', 'no_timestamps', 'no_speech', 'translate', 'blank_id'])
 SOTSEQ = list(map(int, meta['sot_sequence'].split(','))) + [NOTS]
+SOTPREV = int(meta.get('sot_prev', 50360))
 TOK = {}
 for line in open(M + 'tokens.txt'):
     t, i = line.split(); TOK[int(i)] = t
+BYTES = {}
+for i, t in TOK.items():
+    try: BYTES.setdefault(base64.b64decode(t), i)
+    except Exception: pass
+MAXB = max(len(b) for b in BYTES)
+
+def encode(text):
+    """Greedy longest-match tokenisation (close to Whisper's BPE; fine for priming prompts)."""
+    b = text.encode('utf-8'); i = 0; out = []
+    while i < len(b):
+        for k in range(min(MAXB, len(b) - i), 0, -1):
+            j = BYTES.get(b[i:i + k])
+            if j is not None: out.append(j); i += k; break
+        else: i += 1
+    return out
+
+PIDGIN_PROMPT = ("Oya, make we yarn. Wetin dey happen? Abeg, una no go believe am. E don happen o. "
+                 "Na so e be, I dey tell una. Dem don pay am, e sweet well well. No wahala, I go show una sha. "
+                 "Una sabi say na correct thing? Make una follow me, abi?")
+PROMPT_IDS = None
 di = [i.name for i in dec.get_inputs()]; do = [o.name for o in dec.get_outputs()][:3]
 
 def transcribe(seg):
     ck, cv = enc.run(None, {enc.get_inputs()[0].name: features(seg)})
     kc = np.zeros((L, 1, CTX, ST), np.float32); vc = kc.copy()
-    toks = np.array([SOTSEQ], np.int64); off = np.zeros(1, np.int64)
+    pre = ([SOTPREV] + PROMPT_IDS[-200:]) if PROMPT_IDS else []
+    toks = np.array([pre + SOTSEQ], np.int64); off = np.zeros(1, np.int64)
     out = []
     for step in range(CTX):
         logits, kc, vc = dec.run(do, dict(zip(di, [toks, kc, vc, ck, cv, off])))
@@ -106,7 +131,13 @@ def ts(t):
     return f'{int(h):02}:{int(m):02}:{int(s):02},{int(round((s % 1) * 1000)) % 1000:03}'
 
 if __name__ == '__main__':
-    x = load(sys.argv[1]); pre = sys.argv[2]
+    args = sys.argv[1:]; opt = {}
+    for k in ('--prompt', '--vocab'):
+        if k in args: i = args.index(k); opt[k] = args[i + 1]; del args[i:i + 2]
+    pidgin = '--pidgin' in args; args = [a for a in args if a != '--pidgin']
+    ptxt = ' '.join(filter(None, [PIDGIN_PROMPT if pidgin else '', opt.get('--prompt', ''), (opt['--vocab'] + '.') if opt.get('--vocab') else '']))
+    if ptxt: PROMPT_IDS = encode(' ' + ptxt.strip())
+    x = load(args[0]); pre = args[1]
     segs = []
     for a, b in speech_segments(x):
         text = transcribe(x[int(a * SR):int(b * SR)])

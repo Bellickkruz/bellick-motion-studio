@@ -58,3 +58,5 @@ html,body{margin:0;overflow:hidden;background:var(--bg);font-family:var(--fb);co
 .look-bold .ttl,.look-bold .stmt,.look-bold .ms-cap,.look-bold .ms-name{font-family:var(--fd)}
 .look-editorial .ttl,.look-editorial .stmt,.look-editorial .ms-name{font-family:var(--fd);font-weight:500}
 .look-editorial .stmt span.a{font-style:italic}
+.ms-sub{position:absolute;left:calc(90*var(--u));right:calc(90*var(--u));text-align:center;font-family:var(--fb);font-weight:500;font-size:calc(36*var(--u));line-height:1.25;color:var(--muted);z-index:40}
+.ms-sub.onvideo{color:rgba(255,255,255,.92);text-shadow:0 2px 10px rgba(0,0,0,.6)}
