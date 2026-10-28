@@ -34,7 +34,7 @@
     bold: { bg: 'blocks', cap: 'pop', trans: 'slam', out: 'cut', parts: 0, desc: 'Heavy uppercase type, hard shadows, slams and hard cuts' },
     editorial: { bg: 'paper', cap: 'rise', trans: 'wipe', out: 'wipe', parts: 0, desc: 'Calm magazine layouts, hairlines, masked text and wipes' },
     glass: { bg: 'orbs', cap: 'glass', trans: 'blur', out: 'blur', parts: 1, desc: 'Frosted glass cards, colour orbs, depth-of-field blurs' },
-    reel: { bg: 'field', cap: 'letters', trans: 'whip', out: 'whip', parts: 0, hud: 1, hero: 1, desc: 'Design-reel feel: HUD frame and timecode, palette colour-field cuts, one recurring hero dot, kinetic type' },
+    reel: { bg: 'field', cap: 'letters', trans: 'rise', out: 'fade', parts: 0, hero: 1, desc: 'Design-reel feel: palette colour-field cuts, one recurring hero dot, kinetic type' },
     night: { bg: 'night', cap: 'bar', trans: 'blur', out: 'blur', parts: 0, dark: 1, wash: 1, desc: 'Dark cinematic product feel: atmospheric glow, floating screens, highlight-bar words, accent washes' }
   };
   const FIXED = !!(B.style && (B.style.fixed_background || B.style.background_lock));

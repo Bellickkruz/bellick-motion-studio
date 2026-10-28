@@ -40,7 +40,7 @@ Ask the user to pick one of the three styles below, showing each with its one-li
 **The look comes from the idea, not a menu.** By default, don't ask the user to pick a look. The video's concept (see Creative direction) decides the edit style, so the way the video moves tells the same story as what it says. Some examples:
 - A calm explainer about trust might be editorial: slow wipes and quiet serif type.
 - A launch or a big win might be bold: slams, hard cuts and a highlight on the number.
-- A technical or "how it works" story might be reel: a HUD, a hero dot carrying one thread through every scene, and colour-field chapters.
+- A technical or "how it works" story might be reel: a hero dot carrying one thread through every scene, and colour-field chapters.
 - A late-night product reveal might be night, if the brand allows dark backgrounds.
 
 Mixing is allowed when the story turns: for example, footage in a calm look that hard-cuts into one bold signature moment. Override the look per scene with `in` and `out` and the text `anim`.

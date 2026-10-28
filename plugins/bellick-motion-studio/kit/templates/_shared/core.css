@@ -63,12 +63,6 @@ html,body{margin:0;overflow:hidden;background:var(--bg);font-family:var(--fb);co
 .look-reel .ms-card{box-shadow:none;border:calc(2*var(--u)) solid color-mix(in srgb,var(--text) 18%,transparent);border-radius:calc(var(--r)*.4)}
 .look-reel .ms-cap span.w{overflow:hidden;padding-bottom:.06em}
 .look-reel .ms-cap span i{margin:0}
-.ms-hud{position:absolute;inset:0;pointer-events:none;z-index:36;font-family:'Space Grotesk',var(--fb);text-transform:uppercase;letter-spacing:.14em;color:var(--hudc,rgba(0,0,0,.55))}
-.ms-hud .cn{position:absolute;width:calc(34*var(--u));height:calc(34*var(--u));border-color:currentColor;border-style:solid;border-width:0}
-.ms-hud .t{position:absolute;font-size:calc(20*var(--u));font-weight:500;white-space:nowrap}
-.ms-hud .seg{position:absolute;display:flex;gap:calc(6*var(--u))}
-.ms-hud .seg i{display:block;width:calc(26*var(--u));height:calc(4*var(--u));background:currentColor;opacity:.3}
-.ms-hud .seg i.on{opacity:1}
 .ms-hero{position:absolute;left:0;top:0;border-radius:50%;background:var(--accent);z-index:34;pointer-events:none;box-shadow:0 0 calc(30*var(--u)) color-mix(in srgb,var(--accent) 55%,transparent)}
 /* night */
 .look-night .ms-card{background:color-mix(in srgb,var(--surface) 85%,transparent);border:calc(2*var(--u)) solid color-mix(in srgb,var(--text) 12%,transparent);box-shadow:0 calc(40*var(--u)) calc(90*var(--u)) rgba(0,0,0,.5)}
