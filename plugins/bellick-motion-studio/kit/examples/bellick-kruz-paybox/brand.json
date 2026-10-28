@@ -13,12 +13,7 @@
   "surface": "#FFFFFF",
   "muted": "#8A6AA0"
  },
- "avoid_colors": [
-  "green",
-  "mint",
-  "teal",
-  "coral"
- ],
+ "avoid_colors": [],
  "font": {
   "heading": "Poppins",
   "body": "Poppins"
@@ -31,7 +26,6 @@
  },
  "rules": [
   "Background is always warm cream, never dark or purple",
-  "No green, mint, teal or coral anywhere",
   "Do not build until the creator says start"
  ]
 }
