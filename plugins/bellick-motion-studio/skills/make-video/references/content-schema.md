@@ -174,6 +174,12 @@ Chips and buttons that sit on top of whatever is on screen, including full-frame
   {"type": "button", "t0": 53.0, "t1": 55.3, "y": 0.85, "light": true, "icon": "arrow", "text": "Share"}
 ]
 ```
+Overlay extras:
+- `"image": "path.png"` puts a picture in the chip, for example a partner logo kept in its original colours.
+- `"anim": "scramble"` decodes the text from random letters.
+- `"anim": "type"` types it out (`cps` sets the speed).
+- `"anim": "count"` counts a number up (`from`, `to`, `pad`, `prefix`, `suffix`, `countDur`), for example 01/13 → 13/13.
+
 `y` is a fraction of the height. Keep overlays clear of the captions (on footage, captions sit around `captions.videoY`) and of the face.
 
 Icons: check, arrow, spark, bolt, shield, clock, chart, chat, wallet, lock, user, globe, heart, star, key, search, cart, play.

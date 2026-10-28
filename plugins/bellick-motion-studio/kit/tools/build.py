@@ -32,6 +32,11 @@ for sc in content.get('scenes', []):
         d = sc['src'] if os.path.isabs(sc['src']) else os.path.join(os.path.dirname(os.path.abspath(a.content)), sc['src'])
         if not os.path.isdir(d): sys.exit(f'missing screen frames folder: {d}')
         sc['_src'] = 'file://' + d; sc['_count'] = len(glob.glob(os.path.join(d, 's*.jpg')))
+for ov in content.get('overlays', []):
+    if ov.get('image'):
+        q = ov['image'] if os.path.isabs(ov['image']) else os.path.join(os.path.dirname(os.path.abspath(a.content)), ov['image'])
+        if not os.path.exists(q): sys.exit(f'missing overlay image: {q}')
+        ov['_img'] = 'file://' + q
 cfg = {'brand': brand, 'product': product, 'content': content, 'words': words, 'format': {'w': w, 'h': h},
        'assets': {'logo': asset(a.product, product.get('logo')) if a.product else None, 'avatar': asset(a.brand, brand.get('avatar')) if a.brand else None,
                   'frames': ('file://' + frames) if frames else None, 'frameCount': fc, 'fps': a.fps}}
