@@ -60,3 +60,7 @@ html,body{margin:0;overflow:hidden;background:var(--bg);font-family:var(--fb);co
 .look-editorial .stmt span.a{font-style:italic}
 .ms-sub{position:absolute;left:calc(90*var(--u));right:calc(90*var(--u));text-align:center;font-family:var(--fb);font-weight:500;font-size:calc(36*var(--u));line-height:1.25;color:var(--muted);z-index:40}
 .ms-sub.onvideo{color:rgba(255,255,255,.92);text-shadow:0 2px 10px rgba(0,0,0,.6)}
+.ms-cap .lk-small{font-family:var(--fd,var(--fh));font-style:italic;font-weight:400;font-size:.66em;letter-spacing:0;margin:0 .12em}
+.ms-cap.onvideo .lk-small{-webkit-text-stroke:calc(7*var(--u)) rgba(0,0,0,.5)}
+.ms-cap .lk-mid{font-weight:700;font-size:.9em;margin:0 .1em}
+.ms-cap .lk-big{font-family:var(--fh);font-weight:800;text-transform:uppercase;letter-spacing:-.02em;font-size:1.42em;margin:.02em .1em}

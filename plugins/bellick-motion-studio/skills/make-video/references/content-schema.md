@@ -23,9 +23,12 @@ Every video has a **look**, a full visual personality covering type, cards, capt
   "footnote": "Illustrative flow · …",        // optional small text (falls back to none)
   "keywords": ["AI", "approve"],              // extra caption words to highlight (product name is automatic)
   "captions": {"mode": "light|video", "y": 0.16, "size": 92, "off": false},  // optional overrides; y = fraction of height, size at 1080 scale
-  "subtitles": [[0.2, 3.1, "Please, what's going on?"]]  // optional second line under the captions, e.g. English under Pidgin
+  "subtitles": [[0.2, 3.1, "Please, what's going on?"]],  // optional second line under the captions, e.g. English under Pidgin
+  "lockups": {"big": ["Whop", "easy", "follow"], "boom": ["easy", "follow"]}  // only with captions.style "lockup"
 }
 ```
+
+**Caption styles.** The default is the look's kinetic captions, three words at a time. `"captions": {"style": "lockup"}` switches to typographic lockups. Each phrase builds word by word: filler words (the, you, on…) in a small italic serif, other words in bold sans, and words in `lockups.big` land big in UPPERCASE on their own line, in the accent colour on the brand background and in `--soft` over footage. Pick one big word per phrase or fewer, or it stops feeling special. `big` defaults to the product name plus `keywords`; `small` can replace the filler-word list. Lockups grow downwards, so over animation set `captions.y` a little higher (about 0.12–0.13 in portrait) and check stills for clashes with scene titles. `lockups.boom` lists the hero words that get a bass boom (see sound.md).
 
 ## Template `ugc` (captions & graphics on the user's footage)
 Duration = clip length + 3.2s end card (set `endGap` to add a pause before the end card).

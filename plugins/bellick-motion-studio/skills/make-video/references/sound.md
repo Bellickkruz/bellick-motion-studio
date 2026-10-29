@@ -24,7 +24,7 @@ Suggest a mood in the storyboard from the product's tone, and let the user chang
 ## Pipeline
 Render the video **silent** first (`vsilent.mp4`), so sound can be changed later without re-rendering.
 
-1. **Cue sheet** (effects only): `python3 -I $KIT/tools/sound.py cues content.json --template motion|ugc --duration D --end E --out sfx.json`.
+1. **Cue sheet** (effects only): `python3 -I $KIT/tools/sound.py cues content.json --template motion|ugc --duration D --end E --out sfx.json`. With lockup captions, add `--words words.json`: each word in `lockups.boom` gets a `boom` (a deep sub-bass hit, up to `lockups.booms`, default 8), and other big words get a short `thump`, at most one every 2.5s. Both sit below the voice's range, but still check the mix by transcribing it.
    - `E` is when the end card starts: `endAt` for motion, or the clip length (plus `endGap`) for ugc.
    - It prints a count per effect. Read `sfx.json` and trim anything that would be busy: for example, drop key ticks if the typing is very fast, or a whoosh fighting a strong spoken word.
    - Custom scenes need hand-written cues: `{"t": 3.8, "sfx": "whoosh"}`, with optional `gain` (0–1.5), `dur` (whoosh, riser, shimmer) and `pan` (−1 to 1).

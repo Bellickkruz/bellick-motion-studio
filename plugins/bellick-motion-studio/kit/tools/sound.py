@@ -289,6 +289,21 @@ def sfx_thud(rng, **_):
     return pan2(edge_fade(x, 0.0005)), 0.0
 
 
+def sfx_boom(rng, **_):
+    # deep sub-bass drop with a soft click on top, for a big word landing (lockup captions)
+    n = N(1.1); t = tarr(n); f = 42 + 40 * np.exp(-t / 0.12)
+    body = np.tanh(1.6 * np.sin(TAU * np.cumsum(f) / SR) * np.minimum(1, t / 0.004) * np.exp(-t / 0.38)) / np.tanh(1.6)
+    cl = fft_filter(rng.standard_normal(n), lp(1800)) * np.exp(-t / 0.006) * 0.3
+    return pan2(edge_fade(body + cl, 0.0005, 0.05)), 0.0
+
+
+def sfx_thump(rng, **_):
+    # short low kick for a secondary key word
+    n = N(0.35); t = tarr(n); f = 60 + 70 * np.exp(-t / 0.03)
+    x = np.sin(TAU * np.cumsum(f) / SR) * np.minimum(1, t / 0.002) * np.exp(-t / 0.09) + fft_filter(rng.standard_normal(n), lp(2400)) * np.exp(-t / 0.004) * 0.18
+    return pan2(edge_fade(x, 0.0005)), 0.0
+
+
 BELL = ((1, 1, 1), (2.0, 0.5, 0.62), (3.0, 0.22, 0.4), (4.2, 0.14, 0.24), (5.43, 0.08, 0.14))
 
 
@@ -337,6 +352,8 @@ SFX = {'whoosh': (sfx_whoosh, 0.55, 0.2, 'Airy sweep as a scene or card arrives 
        'pop': (sfx_pop, 0.38, 0.1, 'Bubble or item popping in'),
        'tick': (sfx_tick, 0.14, 0.05, 'Counter tick'),
        'thud': (sfx_thud, 0.32, 0.1, 'Soft drop for statement words'),
+       'boom': (sfx_boom, 0.6, 0.0, 'Deep sub-bass hit when a big lockup word lands (sits under the voice)'),
+       'thump': (sfx_thump, 0.38, 0.0, 'Short low kick for a secondary key word'),
        'blip': (sfx_blip, 0.3, 0.18, 'Two-note "on" for toggles, states and passkey prompts (tuned to the music)'),
        'success': (sfx_success, 0.36, 0.3, 'Rising three notes for approved, done or a finished count (tuned)'),
        'chime': (sfx_chime, 0.42, 0.5, 'Bell for logo reveals and the end card (tuned)'),
@@ -357,7 +374,7 @@ def make_sfx(cues, dur, tonic, seed=7):
 
 
 # ---------------------------------------------------------------- automatic cue sheet from content.json
-def cues_from_content(ct, template, dur, end):
+def cues_from_content(ct, template, dur, end, words=None):
     q = []
     def add(t, s, **kw):
         if 0 <= t < dur: q.append(dict(t=round(float(t), 3), sfx=s, **kw))
@@ -451,6 +468,17 @@ def cues_from_content(ct, template, dur, end):
                     else: add(a['tapAt'] + 0.4, 'success', gain=0.8)
             elif ty == 'stat': counting(t0 + 0.2, c.get('countDur', 1.2), c.get('from', 0), c.get('to', 0))
             elif ty in ('card', 'chip'): add(t0 + 0.25, 'pop', gain=0.8)
+    LK = ct.get('lockups') or {}
+    if words and (ct.get('captions') or {}).get('style') == 'lockup':
+        # lockup captions: boom on the chosen hero words, a thump on other big words (at most one every 2.5s)
+        nw = lambda w: w.lower().strip('.,!?;:…"“”')
+        big = {nw(x) for x in LK.get('big', ct.get('keywords', []))}; boom = {nw(x) for x in LK.get('boom', [])}
+        last = -9; lim = LK.get('booms', 8); used = 0; stmt = [(x['t0'], x['t1']) for x in ct.get('scenes', []) if x.get('type') == 'statement']
+        for w in words:
+            k = nw(w['w']); t = w['s']
+            if any(a <= t < b for a, b in stmt): continue
+            if k in boom and used < lim: add(t - .02, 'boom', gain=0.85); used += 1; boom.discard(k); last = t
+            elif k in big and t - last >= 2.5: add(t - .02, 'thump', gain=0.6); last = t
     for o in ct.get('overlays', []):
         add(o.get('t0', 0) + .1, 'swish', gain=0.7)
         if o.get('type') == 'button' and o.get('tapAt') is not None: add(o['tapAt'], 'click'); add(o['tapAt'] + .1, 'blip', gain=0.6)
@@ -548,6 +576,7 @@ def main():
     sp.add_parser('list')
     c = sp.add_parser('cues'); c.add_argument('content'); c.add_argument('--template', choices=['motion', 'ugc'], required=True)
     c.add_argument('--duration', type=float); c.add_argument('--end', type=float); c.add_argument('--out', required=True)
+    c.add_argument('--words', help='words.json, so lockup captions get booms and thumps on their big words')
     m = sp.add_parser('make'); m.add_argument('--duration', type=float, required=True); m.add_argument('--end', type=float)
     m.add_argument('--mood', default='calm', choices=list(MOODS) + ['none']); m.add_argument('--sfx'); m.add_argument('--key-of', choices=list(MOODS))
     m.add_argument('--seed', type=int, default=7); m.add_argument('--out-dir', required=True)
@@ -562,7 +591,7 @@ def main():
         ct = json.load(open(a.content)); D = a.duration or ct.get('duration')
         if not D: sys.exit('Pass --duration (the ugc template has no duration in content.json).')
         E = a.end if a.end is not None else ct.get('endAt', D - 3.2 if a.template == 'motion' else None)
-        q = cues_from_content(ct, a.template, D, E); json.dump(q, open(a.out, 'w'), indent=0)
+        q = cues_from_content(ct, a.template, D, E, json.load(open(a.words)) if a.words else None); json.dump(q, open(a.out, 'w'), indent=0)
         counts = {}
         for c in q: counts[c['sfx']] = counts.get(c['sfx'], 0) + 1
         print(f'{len(q)} cues -> {a.out}: ' + ', '.join(f'{k} x{v}' for k, v in counts.items()))

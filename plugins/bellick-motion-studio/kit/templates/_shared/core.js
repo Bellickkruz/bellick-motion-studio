@@ -145,8 +145,31 @@
     if (SUBS.length) subEl = el('div', 'ms-sub', parent);
     capEl.style.top = (capCfg.y * H) + 'px'; capEl.style.fontSize = (capCfg.size * U) + 'px';
   }
+  /* lockup style: small italic serif filler words, bold sans words, one big UPPERCASE accent word per phrase, built word by word */
+  const LKW = (CT.lockups && CT.lockups.big) || [PR.name, ...(CT.keywords || [])].filter(Boolean);
+  const nrm = w => w.toLowerCase().replace(/^[^\w$]+|[^\w$]+$/g, '');
+  const LBIG = new Set(LKW.map(nrm)), LSMALL = new Set(((CT.lockups && CT.lockups.small) || "a an the of to and or is are was be it its it's that this these so for on in at with from as by i my me we you your you're you've they there just can will would also even like then what how where which one").split(' '));
+  const lrole = w => { const n = nrm(w); return LBIG.has(n) ? 'big' : (LSMALL.has(n) ? 'small' : 'mid'); };
+  const LPH = []; { let cur = []; WORDS.forEach((w, i) => { cur.push(i); const nx = WORDS[i + 1]; if (/[.,!?;:…]$/.test(w.w) || cur.length >= 6 || (lrole(w.w) === 'big' && cur.length >= 2) || (nx && nx.s - w.e > .45)) { LPH.push(cur); cur = []; } }); if (cur.length) LPH.push(cur); }
+  function lockups(t, opts) {
+    const last = WORDS[WORDS.length - 1].e;
+    if (t > last + .7 || (opts.hideAfter && t > opts.hideAfter)) { capEl.innerHTML = ''; return; }
+    let pi = -1; for (let k = 0; k < LPH.length; k++) if (t >= WORDS[LPH[k][0]].s - .08) pi = k;
+    if (pi < 0) { capEl.innerHTML = ''; return; }
+    const ids = LPH[pi], pend = WORDS[ids[ids.length - 1]].e, nx = LPH[pi + 1];
+    if (t > pend + .6 && (!nx || t < WORDS[nx[0]].s - .08)) { capEl.innerHTML = ''; return; }
+    const video = capEl.classList.contains('onvideo'); capEl.style.lineHeight = '1';
+    capEl.innerHTML = ids.map(i => {
+      const w = WORDS[i], r = lrole(w.w); const a = (pi === 0 && t < .4) ? 1 : P(t, w.s - .06, r === 'big' ? .3 : .22); if (a <= 0) return '';
+      const tx = w.w.replace(/[,;:]$/, '');
+      if (r === 'big') { const k = eBack(a); return `<span style="flex-basis:100%;height:0;margin:0"></span><span class="lk-big" style="color:${video ? 'var(--soft)' : 'var(--ink)'};transform:translateY(${(1 - clamp(k)) * 30}%) scale(${lerp(1.35, 1, clamp(k, 0, 1.1))});opacity:${clamp(a * 3)}"><i>${tx}</i></span><span style="flex-basis:100%;height:0;margin:0"></span>`; }
+      const e = eOut(a); return `<span class="lk-${r}" style="transform:translateY(${(1 - e) * 40}%);opacity:${e}"><i>${tx}</i></span>`;
+    }).join('');
+    capEl.style.opacity = t > pend + .3 && pi === LPH.length - 1 ? 1 - P(t, pend + .3, .4) : 1;
+  }
   function captions(t, opts = {}) {
     if (!capEl || !WORDS.length) return; const last = WORDS[WORDS.length - 1].e;
+    if (capCfg.style === 'lockup') { lockups(t, opts); return captionSubs(t, opts); }
     if (t > last + .7 || (opts.hideAfter && t > opts.hideAfter)) { capEl.innerHTML = ''; return; }
     let ci = 0; for (let k = 0; k < CH.length; k++) if (t >= WORDS[CH[k][0]].s - .06) ci = k;
     const ids = CH[ci], cs = WORDS[ids[0]].s;
@@ -159,6 +182,9 @@
     }).join('');
     capEl.innerHTML = LK.cap === 'glass' ? `<div class="ms-capbox">${html}</div>` : html;
     capEl.style.opacity = t > last + .3 ? 1 - P(t, last + .3, .4) : 1;
+    captionSubs(t, opts);
+  }
+  function captionSubs(t, opts) {
     if (subEl) { const sb = SUBS.find(x => t >= x[0] - .05 && t < x[1] + .3); const hide = (opts.hideAfter && t > opts.hideAfter) || !capEl.innerHTML;
       subEl.textContent = sb && !hide ? sb[2] : ''; subEl.classList.toggle('onvideo', capEl.classList.contains('onvideo'));
       subEl.style.top = (capEl.offsetTop + capEl.offsetHeight + 14 * U) + 'px'; subEl.style.opacity = sb ? clamp(P(t, sb[0] - .05, .25)) : 0; }

@@ -127,6 +127,6 @@ After step 8, send the setup summary (all eight choices) and start the pipeline.
 Edit `content.json` or `words.json`, rebuild, re-check the affected stills, re-render and re-verify. Sound-only changes (adding, removing or swapping music, effects or levels) reuse the silent `vsilent.mp4` and only re-mix, which takes seconds. When a caption word is corrected, regenerate `words.json` from the corrected phrase text.
 
 ## Quality bar
-- Kinetic captions, three words at a time, with the active word in the accent colour and keywords highlighted. The hook is visible in frame 1.
+- Kinetic captions, three words at a time, with the active word in the accent colour and keywords highlighted. The hook is visible in frame 1. When the story suits a punchier, magazine-style read, use lockup captions instead (`captions.style: "lockup"`, see content-schema.md): mixed serif and sans words with one big UPPERCASE word per phrase. Choose it per video; it's not the default.
 - For product flows that involve user approval, never show the action completing before approval. Outcomes read "Submitted" or "Done", never guaranteed results unless the product facts support them.
 - Keep movement purposeful: one idea per scene, transitions that carry meaning (a dive *into* the product, a freeze while waiting for the user), and generous negative space.
