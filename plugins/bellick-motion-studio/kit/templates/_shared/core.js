@@ -171,37 +171,37 @@
      filler phrases show one word at a time, small and centred; heroes move around the frame and briefly overlap */
   const KPH = LPH.map((ids, k) => { const h = ids.findIndex(i => lrole(WORDS[i].w) === 'big'); return { ids, k, h, s: WORDS[ids[0]].s, e: WORDS[ids[ids.length - 1]].e }; });
   const KH = KPH.filter(p => p.h >= 0); const KENT = ['rise', 'slide', 'drop', 'wipe'];
-  KH.forEach((p, j) => { p.j = j; p.ent = KENT[(j + (CT.seed || 0)) % 4]; p.serif = j % 3 === 2; p.end = Math.min(KH[j + 1] ? KH[j + 1].s + .35 : 1e9, p.e + 1.4); });
+  KH.forEach((p, j) => { p.j = j; p.ent = KENT[(j + (CT.seed || 0)) % 4]; p.serif = j % 3 === 2; const nx = KPH[p.k + 1]; p.end = Math.min(nx ? nx.s - .05 : 1e9, p.e + 1.0); });
   let kHero = []; const kfit = {};
   function kicker(t, opts) {
     const last = WORDS[WORDS.length - 1].e, off = t > last + .9 || (opts.hideAfter && t > opts.hideAfter);
     const video = capEl.classList.contains('onvideo'), mx = 70 * U, maxW = W - 2 * mx, base = capCfg.size * U;
     if (!kHero.length) kHero = [0, 1].map(() => { const d = el('div', 'ms-kick', capEl.parentNode); return d; });
-    const live = off ? [] : KH.filter(p => t >= p.s - .08 && t < p.end + .3).slice(-2);
+    const live = off ? [] : KH.filter(p => t >= p.s - .08 && t < p.end + .25).slice(-1);
     kHero.forEach((d, slot) => {
-      const p = live.find(q => q.j % 2 === slot); if (!p) { d.innerHTML = ''; return; }
+      const p = slot === 0 ? live[0] : null; if (!p) { d.innerHTML = ''; return; }
       const ids = p.ids, hi = ids[p.h], hw = WORDS[hi];
       const kick = ids.slice(0, p.h), tail = ids.slice(p.h + 1);
       const word = (i, cls) => { const w = WORDS[i]; const a = eOut(P(t, w.s - .06, .25)); return a <= 0 ? '' : `<span class="${cls}" style="clip-path:inset(-20% ${(1 - a) * 100}% -20% 0);opacity:${clamp(a * 2)}">${w.w.replace(/[,;:]$/, '')}</span>`; };
-      const ha = P(t, hw.s - .06, .42), k = eOut(ha), b = eBack(ha); let tr = '', fl = '';
-      if (p.ent === 'rise') tr = `translateY(${(1 - k) * 105}%)`;
-      else if (p.ent === 'slide') { tr = `translateX(${(1 - k) * -60}%)`; fl = `blur(${(1 - k) * 14 * U}px)`; }
-      else if (p.ent === 'drop') { tr = `scale(${lerp(1.6, 1, clamp(b, 0, 1.08))})`; fl = `blur(${(1 - k) * 10 * U}px)`; }
+      const ha = P(t, hw.s - .06, .32), k = eOut(ha), b = eBack(ha); let tr = '', fl = '';
+      if (p.ent === 'rise') tr = `translateY(${(1 - k) * 60}%)`;
+      else if (p.ent === 'slide') { tr = `translateX(${(1 - k) * -18}%)`; fl = `blur(${(1 - k) * 4 * U}px)`; }
+      else if (p.ent === 'drop') { tr = `scale(${lerp(1.25, 1, clamp(b, 0, 1.08))})`; fl = `blur(${(1 - k) * 3 * U}px)`; }
       const clip = p.ent === 'wipe' ? `clip-path:inset(-20% ${(1 - k) * 100}% -20% 0);` : '';
       const ex = P(t, p.end, .3); const htx = hw.w.replace(/[.,!?;:…]$/, '');
-      const fs = kfit[p.j] || (kfit[p.j] = Math.min(base * 2.1, maxW / Math.max(3, htx.length * (p.serif ? .5 : .6))));
+      const fs = kfit[p.j] || (kfit[p.j] = Math.min(base * 1.75, maxW / Math.max(3, htx.length * (p.serif ? .52 : .62))));
       d.className = 'ms-kick' + (video ? ' onvideo' : '') + (p.serif ? ' serif' : '');
       d.innerHTML = `<div class="kk">${kick.map(i => word(i, 'kw')).join(' ')}</div><div class="hm"><div class="hw" style="font-size:${fs}px;${clip}transform:${tr};filter:${fl || 'none'};opacity:${ha > 0 ? 1 : 0}">${htx}</div></div><div class="kt">${tail.map(i => word(i, 'kw')).join(' ')}</div>`;
-      const y = video ? (p.j % 2 ? (capCfg.kickLow != null ? capCfg.kickLow : .68) : (capCfg.kickHigh != null ? capCfg.kickHigh : .13)) : (capCfg.kickY != null ? capCfg.kickY : .1);
+      const lo = capCfg.kickLow != null ? capCfg.kickLow : .68, hi = capCfg.kickHigh != null ? capCfg.kickHigh : .13;
+      const y = video ? (capCfg.kickAlternate && p.j % 2 === 0 ? hi : lo) : (capCfg.kickY != null ? capCfg.kickY : .1);
       d.style.left = mx + 'px'; d.style.width = maxW + 'px'; d.style.top = (y * H) + 'px'; d.style.textAlign = video ? 'left' : 'center';
-      d.style.fontSize = base * .5 + 'px'; d.style.opacity = 1 - ex; d.style.filter = ex > 0 ? `blur(${ex * 12 * U}px)` : 'none';
+      d.style.fontSize = base * .5 + 'px'; d.style.opacity = 1 - ex; d.style.filter = 'none';
     });
     // filler phrases: one word at a time
     const p = off ? null : KPH.find(q => q.h < 0 && t >= q.s - .08 && t < q.e + .35);
     const heroOn = live.some(q => t < q.end);
     if (!p || heroOn) { capEl.innerHTML = ''; return; }
-    let cur = p.ids[0]; p.ids.forEach(i => { if (t >= WORDS[i].s - .06) cur = i; }); const w = WORDS[cur]; const a = P(t, w.s - .06, .2);
-    capEl.innerHTML = `<span class="lk-mid" style="opacity:${eOut(a)};filter:blur(${(1 - eOut(a)) * 8 * U}px)"><i>${w.w.replace(/[,;:]$/, '')}</i></span>`;
+    capEl.innerHTML = p.ids.filter(i => t >= WORDS[i].s - .06).map(i => { const a = eOut(P(t, WORDS[i].s - .06, .18)); return `<span style="opacity:${a};transform:translateY(${(1 - a) * 18}%)"><i>${WORDS[i].w.replace(/[,;:]$/, '')}</i></span>`; }).join('');
     capEl.style.opacity = 1;
   }
   function captions(t, opts = {}) {
