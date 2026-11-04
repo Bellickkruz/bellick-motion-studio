@@ -192,8 +192,8 @@
       const fs = kfit[p.j] || (kfit[p.j] = Math.min(base * 1.75, maxW / Math.max(3, htx.length * (p.serif ? .52 : .62))));
       d.className = 'ms-kick' + (video ? ' onvideo' : '') + (p.serif ? ' serif' : '');
       d.innerHTML = `<div class="kk">${kick.map(i => word(i, 'kw')).join(' ')}</div><div class="hm"><div class="hw" style="font-size:${fs}px;${clip}transform:${tr};filter:${fl || 'none'};opacity:${ha > 0 ? 1 : 0}">${htx}</div></div><div class="kt">${tail.map(i => word(i, 'kw')).join(' ')}</div>`;
-      const lo = capCfg.kickLow != null ? capCfg.kickLow : .68, hi = capCfg.kickHigh != null ? capCfg.kickHigh : .13;
-      const y = video ? (capCfg.kickAlternate && p.j % 2 === 0 ? hi : lo) : (capCfg.kickY != null ? capCfg.kickY : .1);
+      const kLo = capCfg.kickLow != null ? capCfg.kickLow : .68, kHi = capCfg.kickHigh != null ? capCfg.kickHigh : .13;
+      const y = video ? (capCfg.kickAlternate && p.j % 2 === 0 ? kHi : kLo) : (capCfg.kickY != null ? capCfg.kickY : .1);
       d.style.left = mx + 'px'; d.style.width = maxW + 'px'; d.style.top = (y * H) + 'px'; d.style.textAlign = video ? 'left' : 'center';
       d.style.fontSize = base * .5 + 'px'; d.style.opacity = 1 - ex; d.style.filter = 'none';
     });
