@@ -480,6 +480,7 @@ def cues_from_content(ct, template, dur, end, words=None):
             if k in boom and used < lim: add(t - .02, 'boom', gain=0.85); used += 1; boom.discard(k); last = t
             elif k in big and t - last >= 2.5: add(t - .02, 'thump', gain=0.6); last = t
     for o in ct.get('overlays', []):
+        if o.get('type') == 'sticker': add(o.get('t0', 0) + .1, 'pop', gain=0.7); continue
         add(o.get('t0', 0) + .1, 'swish', gain=0.7)
         if o.get('type') == 'button' and o.get('tapAt') is not None: add(o['tapAt'], 'click'); add(o['tapAt'] + .1, 'blip', gain=0.6)
     if end is not None and end < dur:

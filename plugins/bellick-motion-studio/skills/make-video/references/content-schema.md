@@ -147,6 +147,23 @@ Overlay extras:
 - `"anim": "type"` types it out (`cps` sets the speed).
 - `"anim": "count"` counts a number up (`from`, `to`, `pad`, `prefix`, `suffix`, `countDur`), for example 01/13 → 13/13.
 
+**Stickers** are small pictures that pop in beside the words they illustrate, with a gentle float, a white cut-out edge and an optional shape behind:
+```json
+{"type": "sticker", "t0": 24.5, "t1": 25.95, "emoji": "♟️", "x": 0.84, "y": 0.29, "size": 220, "shape": "blob", "shapeColor": "softer", "rotate": 6}
+```
+- **Art:** `emoji`, `image` (a transparent PNG, ideally the user's own), or `icon` (a built-in icon on a white disc, in brand colours).
+- **Placement:** `x` and `y` give the centre as fractions of the frame; `size` is in pixels at 1080 scale.
+- **Shape behind:** `shape` is `circle`, `blob` or `none`. `shapeColor` is `soft`, `softer`, `accent`, `primary`, `ink` or a hex colour.
+- **Options:** `outline: false` drops the white edge.
+- **Sound:** `sound.py cues` gives each sticker a pop.
+
+**Use stickers sparingly, and be smart about it:**
+- Only for concrete things you can picture (chess, books, a phone, money, a plane), never for abstract words (quality, easy, reputable).
+- At most about one every 8–10 seconds; a short list ("chess, free books") can take two in a row.
+- Many videos need none.
+- Place each one in empty space beside the words, away from the face, a hero caption, its tail and logos on clothing. Check stills.
+- Don't use a real brand's logo as a sticker unless the user supplied it for that video.
+
 `y` is a fraction of the height. Keep overlays clear of the captions (on footage, captions sit around `captions.videoY`) and of the face.
 
 Icons: check, arrow, spark, bolt, shield, clock, chart, chat, wallet, lock, user, globe, heart, star, key, search, cart, play.
