@@ -30,6 +30,14 @@ Every video has a **look**, a full visual personality covering type, cards, capt
 
 **Caption styles.** The default is the look's kinetic captions, three words at a time. `"captions": {"style": "lockup"}` switches to typographic lockups. Each phrase builds word by word: filler words (the, you, on…) in a small italic serif, other words in bold sans, and words in `lockups.big` land big in UPPERCASE on their own line, in the accent colour on the brand background and in `--soft` over footage. Pick one big word per phrase or fewer, or it stops feeling special. `big` defaults to the product name plus `keywords`; `small` can replace the filler-word list. Lockups grow downwards, so over animation set `captions.y` a little higher (about 0.12–0.13 in portrait) and check stills for clashes with scene titles. `lockups.boom` lists the hero words that get a bass boom (see sound.md).
 
+`"captions": {"style": "kicker"}` is a third style, built around hero words. Each phrase that contains a `lockups.big` word becomes a kicker + hero pair:
+- **Layout:** the words before the hero become a tiny kicker above it, the hero is set huge, and the words after it become a small right-aligned tail.
+- **Entrances:** heroes cycle through four entrances: rise out of a mask, slide in with motion blur, drop in from oversized with blur, and a left-to-right wipe. Every third hero is an italic serif.
+- **Filler phrases:** phrases with no hero show one word at a time, small and centred, fading in from a blur.
+- **Placement:** heroes alternate between a high spot (`captions.kickHigh`, default 0.13) and a low spot (`kickLow`, 0.68) over footage, and sit at `kickY` (0.1) over animation. The previous hero stays briefly as the next one arrives, so they overlap.
+
+Pick heroes sparingly, about one every two or three phrases. Check stills: move `kickHigh` or `kickLow` so heroes sit in empty space, clear of the face, logos on clothing and overlay chips.
+
 ## Template `ugc` (captions & graphics on the user's footage)
 Duration = clip length + 3.2s end card (set `endGap` to add a pause before the end card).
 Layout adapts to shape: portrait puts captions mid-frame and callouts in the lower half; landscape puts captions in the lower third and callouts in a right-hand column; square puts callouts at the bottom.

@@ -469,7 +469,7 @@ def cues_from_content(ct, template, dur, end, words=None):
             elif ty == 'stat': counting(t0 + 0.2, c.get('countDur', 1.2), c.get('from', 0), c.get('to', 0))
             elif ty in ('card', 'chip'): add(t0 + 0.25, 'pop', gain=0.8)
     LK = ct.get('lockups') or {}
-    if words and (ct.get('captions') or {}).get('style') == 'lockup':
+    if words and (ct.get('captions') or {}).get('style') in ('lockup', 'kicker'):
         # lockup captions: boom on the chosen hero words, a thump on other big words (at most one every 2.5s)
         nw = lambda w: w.lower().strip('.,!?;:…"“”')
         big = {nw(x) for x in LK.get('big', ct.get('keywords', []))}; boom = {nw(x) for x in LK.get('boom', [])}
